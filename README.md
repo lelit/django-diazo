@@ -14,9 +14,10 @@ Integrate Diazo in Django using WSGI middleware and add/change themes using the 
 
 ### wsgi.py
 
+    # Apply WSGI middleware here.
     from django_diazo.wsgi import DiazoMiddlewareWrapper
     application = DiazoMiddlewareWrapper(application)
 
-### South
+### Database (South migrations)
 
     python manage.py migrate django_diazo
