@@ -28,10 +28,6 @@ class ThemeForm(forms.ModelForm):
         super(ThemeForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        if self.cleaned_data['rules']:
-            fp = open(self.cleaned_data['rules'], 'w')
-            fp.write(self.cleaned_data['rules_editor'])
-            fp.close()
         if 'upload' in self.files:
             f = self.files['upload']
             if zipfile._check_zipfile(f):
@@ -45,6 +41,10 @@ class ThemeForm(forms.ModelForm):
                 if not os.path.exists(self.instance.rules):
                     # Touch rules.xml since it doesn't exist
                     open(self.instance.rules, 'w').close()
+        if self.instance.rules:
+            fp = open(self.instance.rules, 'w')
+            fp.write(self.cleaned_data['rules_editor'])
+            fp.close()
         if self.cleaned_data['enabled']:
             for t in Theme.objects.all():
                 t.enabled = False
