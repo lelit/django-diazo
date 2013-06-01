@@ -21,8 +21,9 @@ class ThemeForm(forms.ModelForm):
         if 'instance' in kwargs:
             if not 'initial' in kwargs:
                 kwargs['initial'] = {}
-            if kwargs['instance'].rules:
-                fp = open(kwargs['instance'].rules)
+            if 'instance' in kwargs:
+                rules = os.path.join(format(settings.MEDIA_ROOT), kwargs['instance'].prefix, 'rules.xml')
+                fp = open(rules)
                 kwargs['initial'].update({'rules_editor': fp.read()})
                 fp.close()
         super(ThemeForm, self).__init__(*args, **kwargs)
@@ -34,17 +35,14 @@ class ThemeForm(forms.ModelForm):
                 # Unzip uploaded theme
                 z = zipfile.ZipFile(f)
                 z.extractall(os.path.join(format(settings.MEDIA_ROOT), os.path.splitext(z.filename)[0]))
-                # Also set prefix dir
-                self.instance.prefix = os.path.join(settings.MEDIA_URL[1:], os.path.splitext(z.filename)[0])
-                # And rules.xml
-                self.instance.rules = os.path.join(format(settings.MEDIA_ROOT), os.path.splitext(z.filename)[0], 'rules.xml')
-                if not os.path.exists(self.instance.rules):
-                    # Touch rules.xml since it doesn't exist
-                    open(self.instance.rules, 'w').close()
-        if self.instance.rules:
-            fp = open(self.instance.rules, 'w')
-            fp.write(self.cleaned_data['rules_editor'])
-            fp.close()
+                # Set prefix dir
+                self.instance.prefix = os.path.splitext(z.filename)[0]
+
+        rules = os.path.join(format(settings.MEDIA_ROOT), self.instance.prefix, 'rules.xml')
+        fp = open(rules, 'w')
+        fp.write(self.cleaned_data['rules_editor'])
+        fp.close()
+
         if self.cleaned_data['enabled']:
             for t in Theme.objects.all():
                 t.enabled = False
