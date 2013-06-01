@@ -29,10 +29,10 @@ You might want to serve this files in debug mode.
 Add the following to your ``urls.py``:
 
     if settings.DEBUG:
-    urlpatterns = patterns('',
-       url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
-           {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-    ) + urlpatterns
+        urlpatterns = patterns('',
+           url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+               {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+        ) + urlpatterns
 
 For production environments it is not recommended to serve the whole media dir.
 Since this product is not production ready, there's no solution yet included.
