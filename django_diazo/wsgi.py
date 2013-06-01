@@ -17,5 +17,8 @@ class DiazoMiddlewareWrapper(object):
                     rules=theme.rules,
                     prefix=theme.prefix
                 )
-            return self.diazo(environ, start_response)
+            try:
+                return self.diazo(environ, start_response)
+            except:
+                return self.app(environ, start_response)
         return self.app(environ, start_response)
