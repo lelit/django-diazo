@@ -63,7 +63,7 @@ class ThemeAdmin(admin.ModelAdmin):
             upload_classes = ('collapse',)
             editor_classes = ()
         return (
-            (None, {'fields': ('name', 'prefix', 'enabled', 'debug',)}),
+            (None, {'fields': ('name', 'enabled', 'debug',)}),
             (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
             (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
         )
