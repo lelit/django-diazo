@@ -45,7 +45,11 @@ class ThemeForm(forms.ModelForm):
 
         rules = os.path.join(format(settings.MEDIA_ROOT), self.instance.prefix, 'rules.xml')
         fp = open(rules, 'w')
-        fp.write(self.cleaned_data['rules_editor'])
+        if self.cleaned_data['rules_editor']:
+            fp.write(self.cleaned_data['rules_editor'])
+        elif settings.DIAZO_INITIAL_RULES_FILE and os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
+            init_rules = open(settings.DIAZO_INITIAL_RULES_FILE)
+            fp.write(init_rules.read())
         fp.close()
 
         if self.cleaned_data['enabled']:
