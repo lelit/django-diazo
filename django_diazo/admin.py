@@ -13,7 +13,7 @@ from utils import theme_path
 class ThemeForm(forms.ModelForm):
     upload = forms.FileField(required=False, label=_('Zip file'),
                              help_text=_('Will be unpacked in media directory.'))
-    codemirror = CodeMirrorTextarea(mode="xml", theme="eclipse", config={'fixedGutter': True})
+    codemirror = CodeMirrorTextarea()
     rules_editor = forms.CharField(required=False, widget=codemirror)
 
     class Meta:

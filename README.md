@@ -76,6 +76,7 @@ CodeMirror download should be put there (unpacked).
     - the URI of CodeMirror directory (your CodeMirror installation should live in `{{ STATIC_URL }}/{{ CODEMIRROR_PATH }}`)
 - `CODEMIRROR_MODE`
     - the default mode which may be a string or configuration map (DEFAULT: 'javascript')
+    - Suggestion: `'xml'`
 - `CODEMIRROR_THEME`
     - the default theme applied (DEFAULT: 'default')
 - `CODEMIRROR_CONFIG`
