@@ -17,7 +17,7 @@ class DiazoMiddlewareWrapper(object):
                     app=self.app,
                     global_conf=None,
                     rules=os.path.join(format(settings.MEDIA_ROOT), theme.prefix, 'rules.xml'),
-                    prefix=os.path.join(format(settings.MEDIA_URL[1:]), theme.prefix)
+                    prefix=os.path.join(format(settings.MEDIA_URL), theme.prefix)
                 )
             try:
                 return self.diazo(environ, start_response)
