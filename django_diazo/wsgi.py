@@ -1,7 +1,7 @@
 import os
 from diazo.wsgi import DiazoMiddleware
-from django.conf import settings
 from models import Theme
+from utils import theme_path, theme_url
 
 
 class DiazoMiddlewareWrapper(object):
@@ -16,8 +16,8 @@ class DiazoMiddlewareWrapper(object):
                 self.diazo = DiazoMiddleware(
                     app=self.app,
                     global_conf=None,
-                    rules=os.path.join(format(settings.MEDIA_ROOT), theme.prefix, 'rules.xml'),
-                    prefix=os.path.join(format(settings.MEDIA_URL), theme.prefix)
+                    rules=os.path.join(theme_path(theme), 'rules.xml'),
+                    prefix=os.path.join(theme_url(theme), theme.prefix)
                 )
             try:
                 return self.diazo(environ, start_response)

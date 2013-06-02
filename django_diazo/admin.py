@@ -4,46 +4,49 @@ from codemirror.widgets import CodeMirrorTextarea
 from django import forms
 from django.conf import settings
 from django.contrib import admin
-from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from actions import enable_theme
 from models import Theme
+from utils import theme_path
 
 
 class ThemeForm(forms.ModelForm):
     upload = forms.FileField(required=False, label=_('Zip file'),
                              help_text=_('Will be unpacked in media directory.'))
-    codemirror = CodeMirrorTextarea(mode="xml", theme="eclipse", config={ 'fixedGutter': True })
+    codemirror = CodeMirrorTextarea(mode="xml", theme="eclipse", config={'fixedGutter': True})
     rules_editor = forms.CharField(required=False, widget=codemirror)
 
     class Meta:
         model = Theme
 
     def __init__(self, *args, **kwargs):
-        if not 'initial' in kwargs:
-            kwargs['initial'] = {}
         if 'instance' in kwargs and kwargs['instance']:
-            rules = os.path.join(format(settings.MEDIA_ROOT), kwargs['instance'].prefix, 'rules.xml')
-            fp = open(rules)
-            kwargs['initial'].update({'rules_editor': fp.read()})
-            fp.close()
+            rules = os.path.join(theme_path(kwargs['instance']), 'rules.xml')
+            if os.path.exists(rules):
+                fp = open(rules)
+                if not 'initial' in kwargs:
+                    kwargs['initial'] = {'rules_editor': fp.read()}
+                else:
+                    kwargs['initial'].update({'rules_editor': fp.read()})
+                fp.close()
         super(ThemeForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
+        instance = super(ThemeForm, self).save(commit)
+        instance.save()  # We need the pk
+
         if 'upload' in self.files:
             f = self.files['upload']
             if zipfile._check_zipfile(f):
-                # Unzip uploaded theme
                 z = zipfile.ZipFile(f)
-                z.extractall(os.path.join(format(settings.MEDIA_ROOT), os.path.splitext(z.filename)[0]))
-                # Set prefix dir
-                self.instance.prefix = os.path.splitext(z.filename)[0]
+                # Unzip uploaded theme
+                z.extractall(theme_path(instance))
 
-        if not self.instance.prefix:
-            self.instance.prefix = slugify(self.cleaned_data['name'])
-            os.makedirs(os.path.join(format(settings.MEDIA_ROOT), self.instance.prefix))
+        path = theme_path(instance)
+        if not os.path.exists(path):
+            os.makedirs(path)
 
-        rules = os.path.join(format(settings.MEDIA_ROOT), self.instance.prefix, 'rules.xml')
+        rules = os.path.join(theme_path(instance), 'rules.xml')
         fp = open(rules, 'w')
         if self.cleaned_data['rules_editor']:
             fp.write(self.cleaned_data['rules_editor'])
@@ -52,11 +55,11 @@ class ThemeForm(forms.ModelForm):
             fp.write(init_rules.read())
         fp.close()
 
-        if self.cleaned_data['enabled']:
+        if instance.enabled:
             for t in Theme.objects.all():
                 t.enabled = False
                 t.save()
-        return super(ThemeForm, self).save(commit)
+        return instance
 
 
 class ThemeAdmin(admin.ModelAdmin):
@@ -72,7 +75,7 @@ class ThemeAdmin(admin.ModelAdmin):
             upload_classes = ('collapse',)
             editor_classes = ()
         return (
-            (None, {'fields': ('name', 'enabled', 'debug',)}),
+            (None, {'fields': ('name', 'prefix', 'enabled', 'debug',)}),
             (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
             (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
         )
