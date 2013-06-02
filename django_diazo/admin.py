@@ -10,7 +10,8 @@ from models import Theme
 
 
 class ThemeForm(forms.ModelForm):
-    upload = forms.FileField(required=False, label=_('Upload theme zip'), help_text=_('Will be unpacked in media directory.'))
+    upload = forms.FileField(required=False, label=_('Zip file'),
+                             help_text=_('Will be unpacked in media directory.'))
     codemirror = CodeMirrorTextarea(mode="xml", theme="eclipse", config={ 'fixedGutter': True })
     rules_editor = forms.CharField(required=False, widget=codemirror)
 
@@ -18,14 +19,13 @@ class ThemeForm(forms.ModelForm):
         model = Theme
 
     def __init__(self, *args, **kwargs):
-        if 'instance' in kwargs:
-            if not 'initial' in kwargs:
-                kwargs['initial'] = {}
-            if 'instance' in kwargs:
-                rules = os.path.join(format(settings.MEDIA_ROOT), kwargs['instance'].prefix, 'rules.xml')
-                fp = open(rules)
-                kwargs['initial'].update({'rules_editor': fp.read()})
-                fp.close()
+        if not 'initial' in kwargs:
+            kwargs['initial'] = {}
+        if 'instance' in kwargs and kwargs['instance']:
+            rules = os.path.join(format(settings.MEDIA_ROOT), kwargs['instance'].prefix, 'rules.xml')
+            fp = open(rules)
+            kwargs['initial'].update({'rules_editor': fp.read()})
+            fp.close()
         super(ThemeForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
@@ -54,6 +54,19 @@ class ThemeAdmin(admin.ModelAdmin):
     list_display = ('name', 'enabled',)
     actions = [enable_theme]
     form = ThemeForm
+
+    def get_fieldsets(self, request, obj=None):
+        "Hook for specifying fieldsets for the add form."
+        upload_classes = ()
+        editor_classes = ('collapse',)
+        if obj:
+            upload_classes = ('collapse',)
+            editor_classes = ()
+        return (
+            (None, {'fields': ('name', 'prefix', 'enabled', 'debug',)}),
+            (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
+            (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
+        )
 
 
 admin.site.register(Theme, ThemeAdmin)
