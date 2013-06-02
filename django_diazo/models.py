@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Theme(models.Model):
-    name = models.CharField(_('name'), max_length=255, blank=True)
+    name = models.CharField(_('name'), max_length=255)
     prefix = models.CharField(_('prefix'), max_length=255, blank=True)
     enabled = models.BooleanField(_('enabled'), default=False,
                                   help_text=_('Enable this theme (and disable the current, if enabled).'))

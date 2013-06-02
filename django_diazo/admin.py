@@ -4,6 +4,7 @@ from codemirror.widgets import CodeMirrorTextarea
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from actions import enable_theme
 from models import Theme
@@ -37,6 +38,10 @@ class ThemeForm(forms.ModelForm):
                 z.extractall(os.path.join(format(settings.MEDIA_ROOT), os.path.splitext(z.filename)[0]))
                 # Set prefix dir
                 self.instance.prefix = os.path.splitext(z.filename)[0]
+
+        if not self.instance.prefix:
+            self.instance.prefix = slugify(self.cleaned_data['name'])
+            os.makedirs(os.path.join(format(settings.MEDIA_ROOT), self.instance.prefix))
 
         rules = os.path.join(format(settings.MEDIA_ROOT), self.instance.prefix, 'rules.xml')
         fp = open(rules, 'w')
