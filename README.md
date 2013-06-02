@@ -63,7 +63,7 @@ See https://pypi.python.org/pypi/django-codemirror-widget.
 
 #### How to Use
 
-Specify `CODEMIRROR_PATH` on `settings.py`.
+Specify `CODEMIRROR_PATH` in `settings.py`.
 
 `CODEMIRROR_PATH` is the URI of CodeMirror directory like `CODEMIRROR_PATH = r"javascript/codemirror"`.
 If you don't specify it, it defaults to `'codemirror'`.
