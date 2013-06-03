@@ -7,4 +7,4 @@ def theme_path(theme_instance):
 
 
 def theme_url(theme_instance):
-    return os.path.join(format(settings.MEDIA_URL), 'themes', str(theme_instance.pk))
+    return '/'.join([format(settings.MEDIA_URL) + 'themes', str(theme_instance.pk)])

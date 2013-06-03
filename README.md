@@ -81,3 +81,38 @@ CodeMirror download should be put there (unpacked).
     - the default theme applied (DEFAULT: 'default')
 - `CODEMIRROR_CONFIG`
     - base mapping for the rest of the CodeMirror options (DEFAULT: `{ 'lineNumbers': True }`)
+
+### Logging
+
+If you want logging of the errors that might occur in the Diazo transformation, add the following to `settings.py`:
+
+    DIAZO_LOG_FILE = '/var/log/django_diazo.log'
+
+    LOGGING = {
+        'formatters': {
+            ...
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            },
+            ...
+        },
+        'handlers': {
+            ...
+            'django_diazo_file': {
+                'level': 'ERROR',
+                'class': 'logging.FileHandler',
+                'formatter': 'verbose',
+                'filename': DIAZO_LOG_FILE,
+            },
+            ...
+        },
+        'loggers': {
+            ...
+            'django_diazo': {
+                'handlers': ['django_diazo_file'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            ...
+        },
+    }

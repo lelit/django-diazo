@@ -1,4 +1,5 @@
 import os
+from logging import getLogger
 from diazo.wsgi import DiazoMiddleware
 from models import Theme
 from utils import theme_path, theme_url
@@ -21,6 +22,7 @@ class DiazoMiddlewareWrapper(object):
                 )
             try:
                 return self.diazo(environ, start_response)
-            except:
+            except Exception, e:
+                getLogger('django_diazo').error(e)
                 return self.app(environ, start_response)
         return self.app(environ, start_response)
