@@ -61,6 +61,10 @@ Download [CodeMirror](http://codemirror.net/).
 
 See https://pypi.python.org/pypi/django-codemirror-widget.
 
+You may want to add the (unpacked) CodeMirror download folder to your `STATICFILES_DIRS` and run:
+
+    python manage.py collectstatic
+
 #### How to Use
 
 Specify `CODEMIRROR_PATH` in `settings.py`.
