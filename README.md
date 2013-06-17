@@ -46,10 +46,10 @@ You might want to serve these files in debug mode.
 Add the following to your `urls.py`:
 
     if settings.DEBUG:
-        urlpatterns = patterns('',
-           url(r'^media/themes/(?P<path>.*)$', 'django.views.static.serve',
+        urlpatterns += patterns('',
+           url(r'^%s/themes/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'), 'django.views.static.serve',
                {'document_root': os.path.join(settings.MEDIA_ROOT, 'themes'), 'show_indexes': True}),
-        ) + urlpatterns
+        )
 
 For production environments it is not recommended to serve files from the media folder.
 This implementation only servers files in the `themes` folder within the media folder but it would be better to
