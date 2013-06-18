@@ -23,6 +23,11 @@ Example rules.xml contents:
 
         <!-- Disable theme for Django Admin -->
         <notheme if-path="admin" />
+        <!-- Show webpage without theme -->
+        <notheme if-path="unthemed" />
+        <!-- Don't theme the static resources and uploads -->
+        <notheme if-path="static" />
+        <notheme if-path="media" />
 
         <!-- Enable theme -->
         <theme href="index.html" />
@@ -48,7 +53,7 @@ Add the following to your `urls.py`:
     if settings.DEBUG:
         urlpatterns += patterns('',
            url(r'^%s/themes/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'), 'django.views.static.serve',
-               {'document_root': os.path.join(settings.MEDIA_ROOT, 'themes'), 'show_indexes': True}),
+               {'document_root': os.path.join(settings.MEDIA_ROOT, 'themes')}),
         )
 
 For production environments it is not recommended to serve files from the media folder.

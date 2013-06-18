@@ -1,13 +1,36 @@
 import os
 import zipfile
+from logging import getLogger
 from codemirror.widgets import CodeMirrorTextarea
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from actions import enable_theme
 from models import Theme
-from utils import theme_path
+from utils import theme_path, theme_url
+
+
+unthemed_available = False
+try:
+    content_url = reverse('unthemed')
+    unthemed_available = True
+except:
+    getLogger('django_diazo').warning('Please create a url with name \'unthemed\' '
+                                      'that serves unthemed content, '
+                                      'make sure Diazo doesn\'t theme this page.')
+
+
+class IFrameWidget(forms.Widget):
+    def render(self, name, value, attrs=None):
+
+        return mark_safe(render_to_string('django_diazo/iframe_widget.html', {
+            'content_url': content_url if unthemed_available else '',
+            'theme_url': '/'.join([value, 'index.html']),  # value is filled with theme_url()
+        }))
 
 
 class ThemeForm(forms.ModelForm):
@@ -15,20 +38,23 @@ class ThemeForm(forms.ModelForm):
                              help_text=_('Will be unpacked in media directory.'))
     codemirror = CodeMirrorTextarea()
     rules_editor = forms.CharField(required=False, widget=codemirror)
+    if unthemed_available:
+        theme_mapper = forms.CharField(required=False, widget=IFrameWidget)
 
     class Meta:
         model = Theme
 
     def __init__(self, *args, **kwargs):
         if 'instance' in kwargs and kwargs['instance']:
+            if not 'initial' in kwargs:
+                kwargs['initial'] = {}
             rules = os.path.join(theme_path(kwargs['instance']), 'rules.xml')
             if os.path.exists(rules):
                 fp = open(rules)
-                if not 'initial' in kwargs:
-                    kwargs['initial'] = {'rules_editor': fp.read()}
-                else:
-                    kwargs['initial'].update({'rules_editor': fp.read()})
+                kwargs['initial']['rules_editor'] = fp.read()
                 fp.close()
+            if unthemed_available:
+                kwargs['initial']['theme_mapper'] = theme_url(kwargs['instance'])
         super(ThemeForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
@@ -74,11 +100,15 @@ class ThemeAdmin(admin.ModelAdmin):
         if obj:
             upload_classes = ('collapse',)
             editor_classes = ()
-        return (
+
+        ret = (
             (None, {'fields': ('name', 'prefix', 'enabled', 'debug',)}),
             (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
             (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
         )
+        if unthemed_available:
+            ret += (_('Theme mapper'), {'classes': editor_classes, 'fields': ('theme_mapper',)})
+        return ret
 
 
 admin.site.register(Theme, ThemeAdmin)
