@@ -108,7 +108,7 @@ If you want logging of the errors that might occur in the Diazo transformation, 
         'handlers': {
             ...
             'django_diazo_file': {
-                'level': 'ERROR',
+                'level': 'WARNING',
                 'class': 'logging.FileHandler',
                 'formatter': 'verbose',
                 'filename': DIAZO_LOG_FILE,
@@ -119,7 +119,7 @@ If you want logging of the errors that might occur in the Diazo transformation, 
             ...
             'django_diazo': {
                 'handlers': ['django_diazo_file'],
-                'level': 'ERROR',
+                'level': 'WARNING',
                 'propagate': True,
             },
             ...

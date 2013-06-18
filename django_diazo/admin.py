@@ -14,21 +14,22 @@ from models import Theme
 from utils import theme_path, theme_url
 
 
-unthemed_available = False
-try:
-    content_url = reverse('unthemed')
-    unthemed_available = True
-except:
-    getLogger('django_diazo').warning('Please create a url with name \'unthemed\' '
-                                      'that serves unthemed content, '
-                                      'make sure Diazo doesn\'t theme this page.')
-
-
 class IFrameWidget(forms.Widget):
     def render(self, name, value, attrs=None):
+        content_url = ''
+        unthemed_available = False
+        if hasattr(settings, 'DIAZO_UNTHEMED_URLNAME') and settings.DIAZO_UNTHEMED_URLNAME:
+            try:
+                content_url = reverse(settings.DIAZO_UNTHEMED_URLNAME)
+                unthemed_available = True
+            except:
+                pass
 
+        if not unthemed_available:
+            getLogger('django_diazo').warning('Please create a page that serves unthemed content '
+                                              'and provide the DIAZO_UNTHEMED_URLNAME variable in your settings.')
         return mark_safe(render_to_string('django_diazo/iframe_widget.html', {
-            'content_url': content_url if unthemed_available else '',
+            'content_url': content_url,
             'theme_url': '/'.join([value, 'index.html']),  # value is filled with theme_url()
         }))
 
@@ -38,8 +39,7 @@ class ThemeForm(forms.ModelForm):
                              help_text=_('Will be unpacked in media directory.'))
     codemirror = CodeMirrorTextarea()
     rules_editor = forms.CharField(required=False, widget=codemirror)
-    if unthemed_available:
-        theme_mapper = forms.CharField(required=False, widget=IFrameWidget)
+    theme_mapper = forms.CharField(required=False, widget=IFrameWidget)
 
     class Meta:
         model = Theme
@@ -53,8 +53,7 @@ class ThemeForm(forms.ModelForm):
                 fp = open(rules)
                 kwargs['initial']['rules_editor'] = fp.read()
                 fp.close()
-            if unthemed_available:
-                kwargs['initial']['theme_mapper'] = theme_url(kwargs['instance'])
+            kwargs['initial']['theme_mapper'] = theme_url(kwargs['instance'])
         super(ThemeForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
@@ -76,7 +75,9 @@ class ThemeForm(forms.ModelForm):
         fp = open(rules, 'w')
         if self.cleaned_data['rules_editor']:
             fp.write(self.cleaned_data['rules_editor'])
-        elif settings.DIAZO_INITIAL_RULES_FILE and os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
+        elif hasattr(settings, 'DIAZO_INITIAL_RULES_FILE') and \
+                settings.DIAZO_INITIAL_RULES_FILE and \
+                os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
             init_rules = open(settings.DIAZO_INITIAL_RULES_FILE)
             fp.write(init_rules.read())
         fp.close()
@@ -101,14 +102,12 @@ class ThemeAdmin(admin.ModelAdmin):
             upload_classes = ('collapse',)
             editor_classes = ()
 
-        ret = (
+        return (
             (None, {'fields': ('name', 'prefix', 'enabled', 'debug',)}),
             (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
             (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
+            (_('Theme mapper'), {'classes': editor_classes, 'fields': ('theme_mapper',)}),
         )
-        if unthemed_available:
-            ret += (_('Theme mapper'), {'classes': editor_classes, 'fields': ('theme_mapper',)})
-        return ret
 
 
 admin.site.register(Theme, ThemeAdmin)
