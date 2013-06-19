@@ -44,7 +44,7 @@ class ThemeForm(forms.ModelForm):
                              help_text=_('Will be unpacked in media directory.'))
     codemirror = CodeMirrorTextarea()
     rules_editor = forms.CharField(required=False, widget=codemirror)
-    theme_mapper = forms.CharField(required=False, widget=IFrameWidget)
+    # theme_mapper = forms.CharField(required=False, widget=IFrameWidget)
 
     class Meta:
         model = Theme
@@ -58,7 +58,7 @@ class ThemeForm(forms.ModelForm):
                 fp = open(rules)
                 kwargs['initial']['rules_editor'] = fp.read()
                 fp.close()
-            kwargs['initial']['theme_mapper'] = theme_url(kwargs['instance'])
+            # kwargs['initial']['theme_mapper'] = theme_url(kwargs['instance'])
         super(ThemeForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
@@ -111,7 +111,7 @@ class ThemeAdmin(admin.ModelAdmin):
             (None, {'fields': ('name', 'prefix', 'enabled', 'debug',)}),
             (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
             (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
-            (_('Theme mapper'), {'classes': editor_classes, 'fields': ('theme_mapper',)}),
+            # (_('Theme mapper'), {'classes': editor_classes, 'fields': ('theme_mapper',)}),
         )
 
 
