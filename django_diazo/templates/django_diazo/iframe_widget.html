@@ -1,2 +1,53 @@
-<iframe id="theme-iframe" class="iframe" src="{{ content_url }}"></iframe>
-<iframe id="content-iframe" class="iframe" src="{{ theme_url }}"></iframe>
+<link rel="stylesheet" type="text/css" href="/static/django_diazo/css/style.css">
+<script src="/static/django_diazo/js/jquery-litelighter.js"></script>
+<script src="/static/django_diazo/js/jquery-waiting.js"></script>
+<!--<script type="text/javascript" src="/static/django_diazo/js/mapper.js"></script>-->
+
+<div id="iframe-wrap">
+    <div id="theme-iframe-wrap" class="diazo-iframe-wrap">
+        <div class="btn-toolbar iframe-menu">
+            <div class="btn-group">
+                <a class="btn btn-mini parent" href="Javascript:void(0);" title="Select parent" disabled="disabled"
+                   data-iframe="theme"><i class="icon-arrow-up"></i></a>
+                <a class="btn btn-mini dropdown-toggle fullscreen" href="Javascript:void(0);" title="Maximize"
+                   data-iframe="theme"><i class="icon-resize-full"></i></a>
+                <a class="btn btn-mini windowed" href="Javascript:void(0);" title="Minimize" data-iframe="theme"
+                   style="display:none;"><i class="icon-resize-small"></i></a>
+            </div>
+        </div>
+        <iframe id="theme-iframe" class="diazo-iframe" src="{{ theme_url }}"></iframe>
+        <div class="selector-wrap">
+            <div class="selector" id="theme-selector-hover"></div>
+            <div class="selector">Selector: <span id="theme-selector-selected"></span></div>
+            <div class="cf"></div>
+        </div>
+    </div>
+    <div id="content-iframe-wrap" class="diazo-iframe-wrap">
+        <div class="btn-toolbar iframe-menu">
+            <!--<div class="pull-left btn-group">-->
+            <!--<a class="btn btn-mini" id="view-result" data-url="{{ mapper.themed_url }}" href="Javascript:void(0);"-->
+            <!--target="_blank" title="View result"><i class="icon-eye-open"></i> View result</a>-->
+            <!--<a class="btn btn-mini" id="generate-rule" href="Javascript:void(0);" disabled="disabled"-->
+            <!--title="Generate rule"><i class="icon-fire"></i> Generate rule</a>-->
+            <!--</div>-->
+            <div class="btn-group">
+                <a class="btn btn-mini" id="highlighter" href="Javascript:void(0);" data-toggle="button"
+                   title="Toggle highlighter" data-iframe="content"><i class="icon-hand-up"></i></a>
+                <a class="btn btn-mini parent" href="Javascript:void(0);" title="Select parent" disabled="disabled"
+                   data-iframe="content"><i class="icon-arrow-up"></i></a>
+                <a class="btn btn-mini dropdown-toggle fullscreen" href="Javascript:void(0);" title="Maximize"
+                   data-iframe="content"><i class="icon-resize-full"></i></a>
+                <a class="btn btn-mini windowed" href="Javascript:void(0);" title="Minimize" data-iframe="content"
+                   style="display:none;"><i class="icon-resize-small"></i></a>
+            </div>
+        </div>
+        <iframe id="content-iframe" class="diazo-iframe" src="{{ content_url }}"></iframe>
+        <script>django.jQuery("#content-iframe").contents().find('body').html('hoi');</script>
+        <div class="selector-wrap">
+            <div class="selector" id="content-selector-hover"></div>
+            <div class="selector">Selector: <span id="content-selector-selected"></span></div>
+            <div class="cf"></div>
+        </div>
+    </div>
+    <div class="cf"></div>
+</div>

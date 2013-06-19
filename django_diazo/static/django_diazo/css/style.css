@@ -1,0 +1,14 @@
+#iframe-wrap {
+    overflow: hidden;
+}
+
+div.diazo-iframe-wrap {
+    width: 50%;
+    float: left;
+}
+
+iframe.diazo-iframe {
+    width: 100%;
+    height: 450px;
+    border: 1px solid #ccc;
+}

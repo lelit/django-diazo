@@ -14,6 +14,10 @@ from models import Theme
 from utils import theme_path, theme_url
 
 
+class Mapper(object):
+    themed_url = ''
+
+
 class IFrameWidget(forms.Widget):
     def render(self, name, value, attrs=None):
         content_url = ''
@@ -31,6 +35,7 @@ class IFrameWidget(forms.Widget):
         return mark_safe(render_to_string('django_diazo/iframe_widget.html', {
             'content_url': content_url,
             'theme_url': '/'.join([value, 'index.html']),  # value is filled with theme_url()
+            'mapper': Mapper()
         }))
 
 
