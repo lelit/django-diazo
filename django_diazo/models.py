@@ -10,5 +10,9 @@ class Theme(models.Model):
     debug = models.BooleanField(_('debug'), default=False,
                                 help_text=_('Reload theme on every request (vs. reload on changing themes).'))
 
+    path = models.CharField(_('path'), blank=True, null=True, max_length=255)
+    url = models.CharField(_('url'), blank=True, null=True, max_length=255)
+    builtin = models.BooleanField(_('builtin'), default=False)
+
     def __unicode__(self):
         return self.name

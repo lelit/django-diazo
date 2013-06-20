@@ -22,6 +22,7 @@ class ThemeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if 'instance' in kwargs and kwargs['instance']:
             rules = os.path.join(theme_path(kwargs['instance']), 'rules.xml')
+
             if os.path.exists(rules):
                 fp = open(rules)
                 if not 'initial' in kwargs:
@@ -47,10 +48,13 @@ class ThemeForm(forms.ModelForm):
             os.makedirs(path)
 
         rules = os.path.join(theme_path(instance), 'rules.xml')
+
         fp = open(rules, 'w')
         if self.cleaned_data['rules_editor']:
             fp.write(self.cleaned_data['rules_editor'])
-        elif settings.DIAZO_INITIAL_RULES_FILE and os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
+        elif hasattr(settings, 'DIAZO_INITIAL_RULES_FILE') and \
+                settings.DIAZO_INITIAL_RULES_FILE and \
+                os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
             init_rules = open(settings.DIAZO_INITIAL_RULES_FILE)
             fp.write(init_rules.read())
         fp.close()
@@ -75,7 +79,8 @@ class ThemeAdmin(admin.ModelAdmin):
             upload_classes = ('collapse',)
             editor_classes = ()
         return (
-            (None, {'fields': ('name', 'prefix', 'enabled', 'debug',)}),
+            (None, {'fields': ('name', 'prefix', 'enabled', 'debug')}),
+            (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)}),
             (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
             (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
         )

@@ -29,6 +29,33 @@ Example rules.xml contents:
 
     </rules>
 
+We highly recommend to use the following code as the first lines of your settings file. It's just a good practice:
+
+    import os
+
+    PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))  # Level of manage.py
+    BASE_DIR = os.path.dirname(PROJECT_DIR)  # Level of virtualenv
+
+You might want to supply your Django application with an out-of-the-box theme, probably also managed in a VCS.
+Consider the use of `DIAZO_BUILTIN_THEMES` to point to your built-in themes.
+
+    DIAZO_BUILTIN_THEMES = (
+        (os.path.join(STATIC_ROOT, 'default-theme'), '/static/default-theme', 'Default Theme'),
+    )
+
+The first part of the tuple is the location of the theme folder in your file system, the second part of the tuple
+defines the url where the files (assets) are served and the third part of the tuple the name of the theme.
+
+Note that the location in the filesystem here points to a folder in the `STATIC_DIR` of Django. Of course you can
+change this to any location you want, but the files (assets used the theme) need to be served somewhere.
+
+Note that unique identifiers for the themes are the slugified names (`django.template.defaultfilters.slugify`).
+Themes with duplicate slugs will be ignored.
+
+To synchronize the built-in themes with the database/application run the following command:
+
+    python manage.py syncthemes
+
 ### wsgi.py
 
     # Apply WSGI middleware here.
@@ -98,23 +125,31 @@ If you want logging of the errors that might occur in the Diazo transformation, 
             'verbose': {
                 'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
             },
+            'simple': {
+                'format': '%(levelname)s %(message)s'
+            },
             ...
         },
         'handlers': {
             ...
             'django_diazo_file': {
-                'level': 'ERROR',
+                'level': 'INFO',
                 'class': 'logging.FileHandler',
                 'formatter': 'verbose',
                 'filename': DIAZO_LOG_FILE,
+            },
+            'console':{
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple'
             },
             ...
         },
         'loggers': {
             ...
             'django_diazo': {
-                'handlers': ['django_diazo_file'],
-                'level': 'ERROR',
+                'handlers': ['django_diazo_file', 'console'],
+                'level': 'INFO',
                 'propagate': True,
             },
             ...
