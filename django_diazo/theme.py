@@ -1,7 +1,8 @@
 
 
 class DiazoTheme(object):
-    pass
+    name = ''
+    slug = ''
 
 
 class ThemeRegistry(object):
