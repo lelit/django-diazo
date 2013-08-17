@@ -11,6 +11,7 @@ class Migration(SchemaMigration):
         # Adding model 'Rule'
         db.create_table(u'django_diazo_rule', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('polymorphic_ctype', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'polymorphic_django_diazo.rule_set', null=True, to=orm['contenttypes.ContentType'])),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
         ))
         db.send_create_signal(u'django_diazo', ['Rule'])
@@ -39,6 +40,11 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['compoundrule_id', 'rule_id'])
 
+        # Adding field 'Theme.rules'
+        db.add_column(u'django_diazo_theme', 'rules',
+                      self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='themes', null=True, to=orm['django_diazo.Rule']),
+                      keep_default=False)
+
 
     def backwards(self, orm):
         # Deleting model 'Rule'
@@ -53,8 +59,18 @@ class Migration(SchemaMigration):
         # Removing M2M table for field rules on 'CompoundRule'
         db.delete_table(db.shorten_name(u'django_diazo_compoundrule_rules'))
 
+        # Deleting field 'Theme.rules'
+        db.delete_column(u'django_diazo_theme', 'rules_id')
+
 
     models = {
+        u'contenttypes.contenttype': {
+            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
+            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
         u'django_diazo.compoundrule': {
             'Meta': {'object_name': 'CompoundRule', '_ormbases': [u'django_diazo.Rule']},
             'prefix': ('django.db.models.fields.TextField', [], {}),
@@ -65,7 +81,8 @@ class Migration(SchemaMigration):
         u'django_diazo.rule': {
             'Meta': {'object_name': 'Rule'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'polymorphic_ctype': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'polymorphic_django_diazo.rule_set'", 'null': 'True', 'to': u"orm['contenttypes.ContentType']"})
         },
         u'django_diazo.singlerule': {
             'Meta': {'object_name': 'SingleRule', '_ormbases': [u'django_diazo.Rule']},
@@ -81,6 +98,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'path': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'prefix': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'rules': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'themes'", 'null': 'True', 'to': u"orm['django_diazo.Rule']"}),
             'slug': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
         }
