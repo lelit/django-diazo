@@ -15,7 +15,7 @@ class DiazoMiddlewareWrapper(object):
             self.diazo = DiazoMiddleware(
                 app=self.app,
                 global_conf=None,
-                rules='http://localhost:8000/diazo/rules/',
+                rules='{0}://{1}/diazo/rules/'.format(environ['wsgi.url_scheme'], environ['HTTP_HOST']),
                 prefix=theme_url(theme),
                 read_file=False,
                 read_network=True,
