@@ -5,16 +5,15 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from actions import enable_theme
-from models import Theme
-from utils import theme_path
+from django_diazo.actions import enable_theme
+from django_diazo.models import Theme
+from django_diazo.utils import theme_path
 
 
 class ThemeForm(forms.ModelForm):
     upload = forms.FileField(required=False, label=_('Zip file'),
                              help_text=_('Will be unpacked in media directory.'))
-    codemirror = CodeMirrorTextarea()
-    rules_editor = forms.CharField(required=False, widget=codemirror)
+    rules_editor = forms.CharField(required=False, widget=CodeMirrorTextarea())
 
     class Meta:
         model = Theme
@@ -79,7 +78,7 @@ class ThemeAdmin(admin.ModelAdmin):
             upload_classes = ('collapse',)
             editor_classes = ()
         return (
-            (None, {'fields': ('name', 'slug', 'prefix', 'enabled', 'debug')}),
+            (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
             (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)}),
             (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
             (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
