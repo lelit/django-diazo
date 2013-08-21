@@ -1,6 +1,6 @@
 from logging import getLogger
 from diazo.wsgi import DiazoMiddleware
-from utils import theme_path, theme_url, get_active_theme
+from utils import theme_url, get_active_theme
 
 
 class DiazoMiddlewareWrapper(object):

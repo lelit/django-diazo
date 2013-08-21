@@ -2,18 +2,50 @@ import os
 import zipfile
 from codemirror.widgets import CodeMirrorTextarea
 from django import forms
-from django.conf import settings
 from django.contrib import admin
+from django.forms import Widget
+from django.utils.encoding import force_text
+from django.utils.html import format_html, format_html_join
 from django.utils.translation import ugettext_lazy as _
 from django_diazo.actions import enable_theme
 from django_diazo.models import Theme
 from django_diazo.utils import theme_path
 
 
+def flatatt(attrs):
+    """
+    Convert a dictionary of attributes to a single string.
+    The returned string will contain a leading space followed by key="value",
+    XML-style pairs.  It is assumed that the keys do not need to be XML-escaped.
+    If the passed dictionary is empty, then return an empty string.
+
+    The result is passed through 'mark_safe'.
+    """
+    return format_html_join('', ' {0}="{1}"', sorted(attrs.items()))
+
+
+class IFrameWidget(Widget):
+    def __init__(self, attrs=None):
+        # The 'rows' and 'cols' attributes are required for HTML correctness.
+        default_attrs = {'src': 'http://localhost:8000'}
+        if attrs:
+            default_attrs.update(attrs)
+        super(IFrameWidget, self).__init__(default_attrs)
+
+    def render(self, name, value, attrs=None):
+        import pdb;pdb.set_trace()
+        if value is None:
+            value = ''
+        final_attrs = self.build_attrs(attrs, name=name)
+        return format_html('<iframe{0} />',
+                           flatatt(final_attrs))
+
+
 class ThemeForm(forms.ModelForm):
     upload = forms.FileField(required=False, label=_('Zip file'),
                              help_text=_('Will be unpacked in media directory.'))
     rules_editor = forms.CharField(required=False, widget=CodeMirrorTextarea())
+    preview = forms.URLField(required=False, widget=IFrameWidget())
 
     class Meta:
         model = Theme
@@ -46,17 +78,17 @@ class ThemeForm(forms.ModelForm):
         if not os.path.exists(path):
             os.makedirs(path)
 
-        rules = os.path.join(theme_path(instance), 'rules.xml')
+        # rules = os.path.join(theme_path(instance), 'rules.xml')
 
-        fp = open(rules, 'w')
-        if self.cleaned_data['rules_editor']:
-            fp.write(self.cleaned_data['rules_editor'])
-        elif hasattr(settings, 'DIAZO_INITIAL_RULES_FILE') and \
-                settings.DIAZO_INITIAL_RULES_FILE and \
-                os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
-            init_rules = open(settings.DIAZO_INITIAL_RULES_FILE)
-            fp.write(init_rules.read())
-        fp.close()
+        # fp = open(rules, 'w')
+        # if self.cleaned_data['rules_editor']:
+        #     fp.write(self.cleaned_data['rules_editor'])
+        # elif hasattr(settings, 'DIAZO_INITIAL_RULES_FILE') and \
+        #         settings.DIAZO_INITIAL_RULES_FILE and \
+        #         os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
+        #     init_rules = open(settings.DIAZO_INITIAL_RULES_FILE)
+        #     fp.write(init_rules.read())
+        # fp.close()
 
         if instance.enabled:
             for t in Theme.objects.all():
@@ -71,17 +103,13 @@ class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
 
     def get_fieldsets(self, request, obj=None):
-        "Hook for specifying fieldsets for the add form."
-        upload_classes = ()
-        editor_classes = ('collapse',)
-        if obj:
-            upload_classes = ('collapse',)
-            editor_classes = ()
+        """Hook for specifying fieldsets for the add form."""
         return (
             (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
             (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)}),
-            (_('Upload theme'), {'classes': upload_classes, 'fields': ('upload',)}),
-            (_('Rules editor'), {'classes': editor_classes, 'fields': ('rules_editor',)}),
+            (_('Upload theme'), {'classes': ('collapse',), 'fields': ('upload',)}),
+            (_('Preview'), {'classes': (), 'fields': ('preview',)}),
+            # (_('Rules editor'), {'classes': collapsed, 'fields': ('rules_editor',)}),
         )
 
 
