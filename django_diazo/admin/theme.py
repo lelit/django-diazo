@@ -12,18 +12,6 @@ from django_diazo.models import Theme
 from django_diazo.utils import theme_path
 
 
-def flatatt(attrs):
-    """
-    Convert a dictionary of attributes to a single string.
-    The returned string will contain a leading space followed by key="value",
-    XML-style pairs.  It is assumed that the keys do not need to be XML-escaped.
-    If the passed dictionary is empty, then return an empty string.
-
-    The result is passed through 'mark_safe'.
-    """
-    return format_html_join('', ' {0}="{1}"', sorted(attrs.items()))
-
-
 class IFrameWidget(Widget):
     def __init__(self, attrs=None):
         # The 'rows' and 'cols' attributes are required for HTML correctness.
@@ -33,12 +21,12 @@ class IFrameWidget(Widget):
         super(IFrameWidget, self).__init__(default_attrs)
 
     def render(self, name, value, attrs=None):
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         if value is None:
             value = ''
         final_attrs = self.build_attrs(attrs, name=name)
         return format_html('<iframe{0} />',
-                           flatatt(final_attrs))
+                           forms.util.flatatt(final_attrs))
 
 
 class ThemeForm(forms.ModelForm):
