@@ -22,7 +22,7 @@ class SingleRule(Rule):
 
 class CompoundRule(Rule):
     prefix = models.TextField(_('Suffix'))
-    rules = models.ManyToManyField(Rule, related_name='compound_rule')
+    rules = models.ManyToManyField(Rule, related_name='compound_rule', blank=True)
     suffix = models.TextField(_('Suffix'))
 
     def serialize(self):

@@ -96,7 +96,7 @@ class ThemeAdmin(admin.ModelAdmin):
             (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
             (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)}),
             (_('Upload theme'), {'classes': ('collapse',), 'fields': ('upload',)}),
-            (_('Preview'), {'classes': (), 'fields': ('preview',)}),
+            # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             # (_('Rules editor'), {'classes': collapsed, 'fields': ('rules_editor',)}),
         )
 
