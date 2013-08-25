@@ -8,7 +8,7 @@ from django.utils.encoding import force_text
 from django.utils.html import format_html, format_html_join
 from django.utils.translation import ugettext_lazy as _
 from django_diazo.actions import enable_theme
-from django_diazo.models import Theme
+from django_diazo.models import Theme, Rule
 from django_diazo.utils import theme_path
 
 
@@ -87,6 +87,12 @@ class ThemeAdmin(admin.ModelAdmin):
             # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             # (_('Rules editor'), {'classes': collapsed, 'fields': ('rules_editor',)}),
         )
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == 'rules':
+            kwargs['queryset'] = Rule.objects.filter(root=True)
+            return db_field.formfield(**kwargs)
+        return super(ThemeAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 admin.site.register(Theme, ThemeAdmin)

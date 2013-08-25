@@ -5,6 +5,8 @@ from polymorphic import PolymorphicModel
 
 class Rule(PolymorphicModel):
     name = models.CharField(_('Name'), max_length=255)
+    root = models.BooleanField(_('Root'), default=False,
+                               help_text=_('This rule can be used as root for a theme transformation.'))
 
     def __unicode__(self):
         return self.name

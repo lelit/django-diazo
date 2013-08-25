@@ -13,7 +13,7 @@ def theme_path(theme_instance):
     if theme_instance.builtin:
         return theme_instance.path
     else:
-        return os.path.join(format(settings.MEDIA_ROOT), 'themes', str(theme_instance.pk))
+        return os.path.join(format(settings.MEDIA_ROOT), 'themes', str(theme_instance.pk), theme_instance.prefix)
 
 
 def theme_url(theme_instance):
