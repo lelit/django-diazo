@@ -21,7 +21,6 @@ class IFrameWidget(Widget):
         super(IFrameWidget, self).__init__(default_attrs)
 
     def render(self, name, value, attrs=None):
-        # import pdb;pdb.set_trace()
         if value is None:
             value = ''
         final_attrs = self.build_attrs(attrs, name=name)
@@ -32,23 +31,12 @@ class IFrameWidget(Widget):
 class ThemeForm(forms.ModelForm):
     upload = forms.FileField(required=False, label=_('Zip file'),
                              help_text=_('Will be unpacked in media directory.'))
-    rules_editor = forms.CharField(required=False, widget=CodeMirrorTextarea())
     preview = forms.URLField(required=False, widget=IFrameWidget())
 
     class Meta:
         model = Theme
 
     def __init__(self, *args, **kwargs):
-        if 'instance' in kwargs and kwargs['instance']:
-            rules = os.path.join(theme_path(kwargs['instance']), 'rules.xml')
-
-            if os.path.exists(rules):
-                fp = open(rules)
-                if not 'initial' in kwargs:
-                    kwargs['initial'] = {'rules_editor': fp.read()}
-                else:
-                    kwargs['initial'].update({'rules_editor': fp.read()})
-                fp.close()
         super(ThemeForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
@@ -57,10 +45,8 @@ class ThemeForm(forms.ModelForm):
 
         if 'upload' in self.files:
             f = self.files['upload']
-            if zipfile.is_zipfile(f):
-                z = zipfile.ZipFile(f)
-                # Unzip uploaded theme
-                z.extractall(theme_path(instance))
+            z = zipfile.ZipFile(f)
+            z.extractall(theme_path(instance, False))
 
         path = theme_path(instance)
         if not os.path.exists(path):
@@ -85,7 +71,6 @@ class ThemeAdmin(admin.ModelAdmin):
             (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)}),
             (_('Upload theme'), {'classes': ('collapse',), 'fields': ('upload',)}),
             # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
-            # (_('Rules editor'), {'classes': collapsed, 'fields': ('rules_editor',)}),
         )
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
