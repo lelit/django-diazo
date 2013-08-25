@@ -14,12 +14,13 @@ class DiazoMiddlewareWrapper(object):
         if theme:
             rules_file = os.path.join(theme_path(theme), 'rules.xml')
             if theme.id != self.theme_id or not os.path.exists(rules_file) or theme.debug:
-                fp = open(rules_file, 'w')
-                try:
-                    if theme.rules:
-                        fp.write(theme.rules.serialize())
-                finally:
-                    fp.close()
+                if not theme.builtin:
+                    fp = open(rules_file, 'w')
+                    try:
+                        if theme.rules:
+                            fp.write(theme.rules.serialize())
+                    finally:
+                        fp.close()
 
                 self.theme_id = theme.id
 
