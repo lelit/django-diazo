@@ -57,7 +57,7 @@ class ThemeForm(forms.ModelForm):
 
         if 'upload' in self.files:
             f = self.files['upload']
-            if zipfile._check_zipfile(f):
+            if zipfile.is_zipfile(f):
                 z = zipfile.ZipFile(f)
                 # Unzip uploaded theme
                 z.extractall(theme_path(instance))
