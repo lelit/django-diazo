@@ -12,23 +12,6 @@ Integrate Diazo in Django using WSGI middleware and add/change themes using the 
         ...
     )
 
-Optionally you can add `DIAZO_INITIAL_RULES_FILE` and point to a file with an initial rules.xml template.
-Example rules.xml contents:
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <rules
-        xmlns="http://namespaces.plone.org/diazo"
-        xmlns:css="http://namespaces.plone.org/diazo/css"
-        xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
-        <!-- Disable theme for Django Admin -->
-        <notheme if-path="admin" />
-
-        <!-- Enable theme -->
-        <theme href="index.html" />
-
-    </rules>
-
 We highly recommend to use the following code as the first lines of your settings file. It's just a good practice:
 
     import os
@@ -37,20 +20,18 @@ We highly recommend to use the following code as the first lines of your setting
     BASE_DIR = os.path.dirname(PROJECT_DIR)  # Level of virtualenv
 
 You might want to supply your Django application with an out-of-the-box theme, probably also managed in a VCS.
-Consider the use of `DIAZO_BUILTIN_THEMES` to point to your built-in themes.
 
-    DIAZO_BUILTIN_THEMES = (
-        (os.path.join(STATIC_ROOT, 'default-theme'), '/static/default-theme', 'Default Theme'),
-    )
+Create a new app with a `diazo.py` file in its root. The contents of this file is should be something like this:
 
-The first part of the tuple is the location of the theme folder in your file system, the second part of the tuple
-defines the url where the files (assets) are served and the third part of the tuple the name of the theme.
+    from django_diazo.theme import DiazoTheme, registry
 
-Note that the location in the filesystem here points to a folder in the `STATIC_DIR` of Django. Of course you can
-change this to any location you want, but the files (assets used the theme) need to be served somewhere.
 
-Note that unique identifiers for the themes are the slugified names (`django.template.defaultfilters.slugify`).
-Themes with duplicate slugs will be ignored.
+    class BootstrapTheme(DiazoTheme):
+        name = 'Bootstrap Theme'
+        slug = 'bootstrap_theme'
+
+
+    registry.register(BootstrapTheme)
 
 To synchronize the built-in themes with the database/application run the following command:
 

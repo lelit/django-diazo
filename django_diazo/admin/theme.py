@@ -66,18 +66,6 @@ class ThemeForm(forms.ModelForm):
         if not os.path.exists(path):
             os.makedirs(path)
 
-        # rules = os.path.join(theme_path(instance), 'rules.xml')
-
-        # fp = open(rules, 'w')
-        # if self.cleaned_data['rules_editor']:
-        #     fp.write(self.cleaned_data['rules_editor'])
-        # elif hasattr(settings, 'DIAZO_INITIAL_RULES_FILE') and \
-        #         settings.DIAZO_INITIAL_RULES_FILE and \
-        #         os.path.exists(settings.DIAZO_INITIAL_RULES_FILE):
-        #     init_rules = open(settings.DIAZO_INITIAL_RULES_FILE)
-        #     fp.write(init_rules.read())
-        # fp.close()
-
         if instance.enabled:
             for t in Theme.objects.all():
                 t.enabled = False
