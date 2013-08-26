@@ -4,8 +4,7 @@ from codemirror.widgets import CodeMirrorTextarea
 from django import forms
 from django.contrib import admin
 from django.forms import Widget
-from django.utils.encoding import force_text
-from django.utils.html import format_html, format_html_join
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django_diazo.actions import enable_theme
 from django_diazo.models import Theme, Rule
@@ -24,7 +23,7 @@ class IFrameWidget(Widget):
         if value is None:
             value = ''
         final_attrs = self.build_attrs(attrs, name=name)
-        return format_html('<iframe{0} />',
+        return mark_safe('<iframe{0} />',
                            forms.util.flatatt(final_attrs))
 
 
