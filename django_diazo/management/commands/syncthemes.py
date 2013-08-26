@@ -20,6 +20,9 @@ class Command(BaseCommand):
         # Add/modify themes
         for theme in registry.get_themes():
             if theme.slug in themes:
+                themes[theme.slug].path = os.path.join(settings.STATIC_ROOT, theme.slug)
+                themes[theme.slug].path = settings.STATIC_URL + theme.slug
+                themes[theme.slug].save()
                 themes.pop(theme.slug)
             else:
                 Theme.objects.create(
