@@ -65,13 +65,23 @@ class ThemeAdmin(admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         """Hook for specifying fieldsets for the add form."""
-        return (
-            # (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
-            (None, {'fields': ('name', 'enabled', 'debug')}),
-            (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)}),
-            # (_('Upload theme'), {'classes': ('collapse',), 'fields': ('upload',)}),
-            # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
-        )
+        if not obj:
+            return (
+                (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
+                (_('Upload theme'), {'fields': ('upload',)}),
+                # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
+            )
+        elif obj.builtin:
+            return (
+                (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
+                (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)})
+                # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
+            )
+        else:
+            return (
+                (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
+                # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
+            )
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'rules':

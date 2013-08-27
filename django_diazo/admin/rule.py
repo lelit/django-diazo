@@ -25,5 +25,5 @@ class CompoundRuleAdmin(admin.ModelAdmin):
     filter_horizontal = ('rules',)
 
 
-# admin.site.register(SingleRule, SingleRuleAdmin)
-# admin.site.register(CompoundRule, CompoundRuleAdmin)
+admin.site.register(SingleRule, SingleRuleAdmin)
+admin.site.register(CompoundRule, CompoundRuleAdmin)
