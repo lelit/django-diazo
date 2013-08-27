@@ -17,5 +17,5 @@ class DiazoEnableThemeRedirectView(DiazoEnableThemeView, RedirectView):
     pass
 
 
-class DisableThemeRedirectView(DiazoDisableThemeView, RedirectView):
+class DiazoDisableThemeRedirectView(DiazoDisableThemeView, RedirectView):
     pass
