@@ -3,7 +3,8 @@ from django.views.generic import View, RedirectView
 
 class DiazoEnableThemeView(View):
     def dispatch(self, request, *args, **kwargs):
-        request.session.pop('django_diazo_theme_enabled')
+        if 'django_diazo_theme_enabled' in request.session:
+            request.session.pop('django_diazo_theme_enabled')
         return super(DiazoEnableThemeView, self).dispatch(request, *args, **kwargs)
 
 
