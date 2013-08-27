@@ -16,7 +16,7 @@ class DiazoMiddlewareWrapper(object):
         return SessionStore(session_key=request.COOKIES['sessionid'])
 
     def __call__(self, environ, start_response):
-        if self.get_session(environ).get('theme_enabled', True):
+        if self.get_session(environ).get('django_diazo_theme_enabled', True):
             theme = get_active_theme()
             if theme:
                 rules_file = os.path.join(theme_path(theme), 'rules.xml')
