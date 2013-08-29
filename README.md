@@ -25,12 +25,9 @@ Create a new app with a `diazo.py` file in its root. The contents of this file i
 
     from django_diazo.theme import DiazoTheme, registry
 
-
     class BootstrapTheme(DiazoTheme):
         name = 'Bootstrap Theme'
         slug = 'bootstrap_theme'
-
-
     registry.register(BootstrapTheme)
 
 To synchronize the built-in themes with the database/application run the following command:
