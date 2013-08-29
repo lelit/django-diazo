@@ -11,12 +11,14 @@ class DiazoMiddlewareWrapper(object):
         self.app = app
         self.theme_id = None
 
-    def get_session(self, environ):
+    def theme_enabled(self, environ):
         request = WSGIRequest(environ)
-        return SessionStore(session_key=request.COOKIES['sessionid'])
+        if 'sessionid' not in request.COOKIES:
+            return True
+        return SessionStore(session_key=request.COOKIES['sessionid']).get('django_diazo_theme_enabled', True)
 
     def __call__(self, environ, start_response):
-        if self.get_session(environ).get('django_diazo_theme_enabled', True):
+        if self.theme_enabled(environ):
             theme = get_active_theme()
             if theme:
                 rules_file = os.path.join(theme_path(theme), 'rules.xml')
