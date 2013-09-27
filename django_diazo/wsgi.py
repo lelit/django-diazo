@@ -13,6 +13,8 @@ class DiazoMiddlewareWrapper(object):
 
     def theme_enabled(self, environ):
         request = WSGIRequest(environ)
+        if request.GET.get('theme') == 'none':
+            return False
         if 'sessionid' not in request.COOKIES:
             return True
         return SessionStore(session_key=request.COOKIES['sessionid']).get('django_diazo_theme_enabled', True)
