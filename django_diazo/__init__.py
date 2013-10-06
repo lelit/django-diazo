@@ -4,8 +4,7 @@ from django.conf import settings
 
 def autodiscover():
     """
-    Autodiscovers the werewolf in project apps. Each report file which should be found by werewolf, should be
-    named "werewolf_triggers.py".
+    Autodiscovers the 'diazo' module in project apps.
     """
     from django.conf import settings
 
