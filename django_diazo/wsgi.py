@@ -35,12 +35,12 @@ class DiazoMiddlewareWrapper(object):
 
                     self.theme_id = theme.id
 
-                self.diazo = DiazoMiddleware(
-                    app=self.app,
-                    global_conf=None,
-                    rules=rules_file,
-                    prefix=theme_url(theme),
-                )
+                    self.diazo = DiazoMiddleware(
+                        app=self.app,
+                        global_conf=None,
+                        rules=rules_file,
+                        prefix=theme_url(theme),
+                    )
                 try:
                     return self.diazo(environ, start_response)
                 except Exception, e:
