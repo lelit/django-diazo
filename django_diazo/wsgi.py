@@ -10,6 +10,7 @@ class DiazoMiddlewareWrapper(object):
     def __init__(self, app):
         self.app = app
         self.theme_id = None
+        self.diazo = None
 
     def theme_enabled(self, environ):
         request = WSGIRequest(environ)

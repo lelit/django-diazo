@@ -59,7 +59,7 @@ class ThemeForm(forms.ModelForm):
 
 
 class ThemeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'enabled',)
+    list_display = ('name', 'enabled', 'debug',)
     actions = [enable_theme, enable_theme_with_debug, disable_theme]
     form = ThemeForm
 
