@@ -1,6 +1,6 @@
 import os
 from django.conf import settings
-from .models import Theme
+from django_diazo.models import Theme
 
 
 def get_active_theme():
