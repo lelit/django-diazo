@@ -55,7 +55,9 @@ Database (South migrations)
 
     python manage.py migrate django_diazo
 
+---------------
 Uploaded themes
+---------------
 
 By default, the .zip files that are uploaded are extracted in the media
 folder. You might want to serve these files in debug mode. Add the
@@ -72,7 +74,9 @@ the media folder. This implementation only servers files in the
 ``themes`` folder within the media folder but it would be better to
 serve these files using a web server and not via Django.
 
+----------
 CodeMirror
+----------
 
 Download `CodeMirror <http://codemirror.net/>`__.
 
@@ -83,7 +87,9 @@ You may want to add the (unpacked) CodeMirror download folder to your
 
     python manage.py collectstatic
 
+----------
 How to Use
+----------
 
 Specify ``CODEMIRROR_PATH`` in ``settings.py``.
 
@@ -115,7 +121,9 @@ Settings
    -  base mapping for the rest of the CodeMirror options (DEFAULT:
       ``{ 'lineNumbers': True }``)
 
+-------
 Logging
+-------
 
 If you want logging of the errors that might occur in the Diazo
 transformation, add the following to ``settings.py``:
