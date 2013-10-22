@@ -1,4 +1,3 @@
-============
 Django Diazo
 ============
 
@@ -7,7 +6,6 @@ using the Django Admin interface.
 
 The code is maintained on GitHub (https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo).
 
-------------
 Installation
 ------------
 
@@ -55,7 +53,6 @@ Database (South migrations)
 
     python manage.py migrate django_diazo
 
----------------
 Uploaded themes
 ---------------
 
@@ -74,7 +71,6 @@ the media folder. This implementation only servers files in the
 ``themes`` folder within the media folder but it would be better to
 serve these files using a web server and not via Django.
 
-----------
 CodeMirror
 ----------
 
@@ -117,7 +113,6 @@ Settings
    -  base mapping for the rest of the CodeMirror options (DEFAULT:
       ``{ 'lineNumbers': True }``)
 
--------
 Logging
 -------
 
