@@ -24,7 +24,7 @@ setup(
     add/change themes using the Django Admin interface.
     """,
     longdescription=open('docs/README.md', 'rt').read(),
-    url="",
+    url="https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo",
     packages=find_packages(),
     include_package_data=True,
     install_requires=REQUIREMENTS,
