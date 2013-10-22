@@ -33,7 +33,7 @@ class CompoundRule(Rule):
 
 class Theme(models.Model):
     name = models.CharField(_('Name'), max_length=255)
-    slug = models.CharField(_('Slug'), max_length=255)
+    slug = models.CharField(_('Slug'), max_length=255, blank=True)
     prefix = models.CharField(_('Prefix'), max_length=255, blank=True)
     enabled = models.BooleanField(_('Enabled'), default=False,
                                   help_text=_('Enable this theme (and disable the current, if enabled).'))

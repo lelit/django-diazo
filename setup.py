@@ -23,7 +23,8 @@ setup(
     description="""Integrate Diazo in Django using WSGI middleware and
     add/change themes using the Django Admin interface.
     """,
-    url="",
+    longdescription=open('README.md', 'rt').read(),
+    url="https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo",
     packages=find_packages(),
     include_package_data=True,
     install_requires=REQUIREMENTS,

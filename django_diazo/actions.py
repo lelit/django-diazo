@@ -8,9 +8,10 @@ def enable_theme(modeladmin, request, queryset):
         t.save()
     for i in queryset:
         i.enabled = True
+        i.debug = False
         i.save()
         break
-enable_theme.short_description = _('Enable theme')
+enable_theme.short_description = _('Enable theme without debug')
 
 
 def enable_theme_with_debug(modeladmin, request, queryset):
