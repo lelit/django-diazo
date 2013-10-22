@@ -1,5 +1,5 @@
 # encoding: utf-8
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
 
 
 # Code is based on http://code.activestate.com/recipes/573463/
@@ -25,8 +25,18 @@ def _convert_dict_to_xml_recurse(parent, dictitem, listnames, attributenames):
                     elem = ET.Element(tag)
                     parent.append(elem)
                     _convert_dict_to_xml_recurse(elem, child, listnames, attributenames)
+    elif type(dictitem) == ET.Element:
+        for i in dictitem.getchildren():
+            parent.append(i)
     elif not dictitem is None:
         parent.text = unicode(dictitem)
+
+
+def mark_safe(str):
+    """
+    Convert string to an ElementTree.
+    """
+    return ET.fromstring('<wrapper>{0}</wrapper>'.format(str))
 
 
 def dict2et(xmldict, roottag='data', listnames=None, attributenames=[]):
@@ -38,6 +48,16 @@ def dict2et(xmldict, roottag='data', listnames=None, attributenames=[]):
     >>> root = dict2et(data)
     >>> ET.tostring(root)
     '<data><nr>xq12</nr><positionen><item><m>12</m></item><item><m>2</m></item></positionen></data>'
+
+    >>> data = {"nr": "xq12"}
+    >>> root = dict2et(data, attributenames=['nr'])
+    >>> ET.tostring(root)
+    '<data nr="xq12" />'
+
+    >>> data = {"nr": "xq12", "content": mark_safe("<p><span>content data</span></p>")}
+    >>> root = dict2et(data, attributenames=['nr'])
+    >>> ET.tostring(root)
+    '<data nr="xq12"><content><p><span>content data</span></p></content></data>'
 
     Per default ecerything ins put in an enclosing '<data>' element. Also per default lists are converted
     to collecitons of `<item>` elements. But by provding a mapping between list names and element names,

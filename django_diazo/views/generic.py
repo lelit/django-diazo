@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.generic import View, RedirectView
-from django.views.generic.base import ContextMixin
+#from django.views.generic.base import ContextMixin  # Django 1.5 only
 from django_diazo.utils.dict2xml import dict2xml
 
 
@@ -23,6 +23,19 @@ class DiazoEnableThemeRedirectView(DiazoEnableThemeView, RedirectView):
 
 class DiazoDisableThemeRedirectView(DiazoDisableThemeView, RedirectView):
     pass
+
+
+class ContextMixin(object):
+    """
+    Copied from Django 1.5.
+    A default context mixin that passes the keyword arguments received by
+    get_context_data as the template context.
+    """
+
+    def get_context_data(self, **kwargs):
+        if 'view' not in kwargs:
+            kwargs['view'] = self
+        return kwargs
 
 
 class DiazoGenericXmlHtmlResponse(ContextMixin, View):
@@ -62,6 +75,6 @@ class DiazoGenericXmlHtmlResponse(ContextMixin, View):
         """
         ret = super(DiazoGenericXmlHtmlResponse, self).dispatch(request, *args, **kwargs)
         context = self.get_context_data(**kwargs)
-        return HttpResponse('<?xml version="1.0" encoding="UTF-8"?>' +
-                            dict2xml(context, 'context', attributenames=self.attributenames),
-                            content_type="text/html")
+        content = '<?xml version="1.0" encoding="UTF-8"?>' +\
+                  dict2xml(context, 'context', attributenames=self.attributenames)
+        return HttpResponse(content, content_type="text/html")

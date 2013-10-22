@@ -1,6 +1,7 @@
 import os
 from logging import getLogger
 from diazo.wsgi import DiazoMiddleware
+from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.handlers.wsgi import WSGIRequest
 from utils import theme_path, theme_url, get_active_theme
@@ -14,7 +15,7 @@ class DiazoMiddlewareWrapper(object):
 
     def theme_enabled(self, environ):
         request = WSGIRequest(environ)
-        if request.GET.get('theme') == 'none':
+        if settings.DEBUG and request.GET.get('theme') == 'none':
             return False
         if 'sessionid' not in request.COOKIES:
             return True
