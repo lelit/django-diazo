@@ -4,6 +4,8 @@ Django Diazo
 Integrate Diazo in Django using WSGI middleware and add/change themes
 using the Django Admin interface.
 
+The code is maintained on GitHub (https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo).
+
 Installation
 ------------
 
