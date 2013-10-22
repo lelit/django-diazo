@@ -26,7 +26,7 @@ def _convert_dict_to_xml_recurse(parent, dictitem, listnames, attributenames):
                     parent.append(elem)
                     _convert_dict_to_xml_recurse(elem, child, listnames, attributenames)
     elif type(dictitem) == ET.Element:
-        for i in dictitem.getchildren():
+        for i in list(dictitem):
             parent.append(i)
     elif not dictitem is None:
         parent.text = unicode(dictitem)
