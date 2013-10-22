@@ -87,10 +87,6 @@ You may want to add the (unpacked) CodeMirror download folder to your
 
     python manage.py collectstatic
 
-
-How to Use
-----------
-
 Specify ``CODEMIRROR_PATH`` in ``settings.py``.
 
 ``CODEMIRROR_PATH`` is the URI of CodeMirror directory like
