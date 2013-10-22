@@ -18,19 +18,23 @@ settings.py
         ...
     )
 
+
 We highly recommend to use the following code as the first lines of your
 settings file. It's just a good practice:
+
 
     import os
 
     PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))  # Level of manage.py
     BASE_DIR = os.path.dirname(PROJECT_DIR)  # Level of virtualenv
 
+
 You might want to supply your Django application with an out-of-the-box
 theme, probably also managed in a VCS.
 
 Create a new app with a ``diazo.py`` file in its root. The contents of
 this file is should be something like this:
+
 
     from django_diazo.theme import DiazoTheme, registry
 
@@ -39,11 +43,13 @@ this file is should be something like this:
         slug = 'bootstrap_theme'
     registry.register(BootstrapTheme)
 
+
 To synchronize the built-in themes with the database/application run the
 following command:
 
 
     python manage.py syncthemes
+
 
 wsgi.py
 ~~~~~~~
