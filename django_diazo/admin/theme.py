@@ -7,8 +7,7 @@ from django.forms import Widget
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django_diazo.actions import enable_theme, enable_theme_with_debug, disable_theme
-from django_diazo.models import Theme, Rule
-from django_diazo.utils import theme_path
+from django_diazo.models import Theme, Rule, ThemeUserAgent
 
 
 class IFrameWidget(Widget):
@@ -45,9 +44,9 @@ class ThemeForm(forms.ModelForm):
         if 'upload' in self.files:
             f = self.files['upload']
             z = zipfile.ZipFile(f)
-            z.extractall(theme_path(instance, False))
+            z.extractall(instance.theme_path(False))
 
-        path = theme_path(instance)
+        path = instance.theme_path()
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -58,7 +57,14 @@ class ThemeForm(forms.ModelForm):
         return instance
 
 
+class UserAgentInline(admin.TabularInline):
+    model = ThemeUserAgent
+    fields = ['sort', 'pattern', 'allow']
+    extra = 1
+
+
 class ThemeAdmin(admin.ModelAdmin):
+    inlines = [UserAgentInline]
     list_display = ('name', 'enabled', 'debug',)
     actions = [enable_theme, enable_theme_with_debug, disable_theme]
     form = ThemeForm

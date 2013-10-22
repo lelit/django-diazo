@@ -4,7 +4,7 @@ from diazo.wsgi import DiazoMiddleware
 from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.handlers.wsgi import WSGIRequest
-from utils import theme_path, theme_url, get_active_theme
+from utils import get_active_theme
 
 
 class DiazoMiddlewareWrapper(object):
@@ -13,19 +13,20 @@ class DiazoMiddlewareWrapper(object):
         self.theme_id = None
         self.diazo = None
 
-    def theme_enabled(self, environ):
-        request = WSGIRequest(environ)
+    def theme_enabled(self, request):
         if settings.DEBUG and request.GET.get('theme') == 'none':
             return False
         if 'sessionid' not in request.COOKIES:
             return True
-        return SessionStore(session_key=request.COOKIES['sessionid']).get('django_diazo_theme_enabled', True)
+        session = SessionStore(session_key=request.COOKIES['sessionid'])
+        return session.get('django_diazo_theme_enabled', True)
 
     def __call__(self, environ, start_response):
-        if self.theme_enabled(environ):
-            theme = get_active_theme()
+        request = WSGIRequest(environ)
+        if self.theme_enabled(request):
+            theme = get_active_theme(request)
             if theme:
-                rules_file = os.path.join(theme_path(theme), 'rules.xml')
+                rules_file = os.path.join(theme.theme_path(), 'rules.xml')
                 if theme.id != self.theme_id or not os.path.exists(rules_file) or theme.debug:
                     if not theme.builtin:
                         fp = open(rules_file, 'w')
@@ -41,7 +42,7 @@ class DiazoMiddlewareWrapper(object):
                         app=self.app,
                         global_conf=None,
                         rules=rules_file,
-                        prefix=theme_url(theme),
+                        prefix=theme.theme_url(),
                     )
                 try:
                     return self.diazo(environ, start_response)

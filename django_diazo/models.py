@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from polymorphic import PolymorphicModel
+from django.db.models import Max
 
 
 class Rule(PolymorphicModel):
@@ -33,13 +34,14 @@ class CompoundRule(Rule):
 
 class Theme(models.Model):
     name = models.CharField(_('Name'), max_length=255)
-    slug = models.CharField(_('Slug'), max_length=255, blank=True)
+    slug = models.CharField(_('Slug'), max_length=255)
     prefix = models.CharField(_('Prefix'), max_length=255, blank=True)
     enabled = models.BooleanField(_('Enabled'), default=False,
                                   help_text=_('Enable this theme (and disable the current, if enabled).'))
     debug = models.BooleanField(_('Debug'), default=False,
                                 help_text=_('Reload theme on every request (vs. reload on changing themes).'))
 
+    sort = models.IntegerField(_('sort'), blank=True, null=True)
     path = models.CharField(_('Path'), blank=True, null=True, max_length=255)
     url = models.CharField(_('Url'), blank=True, null=True, max_length=255)
     builtin = models.BooleanField(_('Built-in'), default=False)
@@ -48,3 +50,55 @@ class Theme(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.sort:
+            max = Theme.objects.aggregate(Max('sort'))['sort__max']
+            self.sort = (max or 0) + 1
+        super(Theme, self).save(*args, **kwargs)
+
+    def available(self, request):
+        try:
+            ua = request.META['HTTP_USER_AGENT']
+        except:
+            return False
+        for x in self.useragent_strings.order_by('sort'):
+            if x.pattern in ua:
+                return x.allow=='allow'
+        return True
+
+    def theme_path(self, include_prefix=True):
+        if self.builtin:
+            return self.path
+        else:
+            return os.path.join(
+                    format(settings.MEDIA_ROOT), 'themes', str(self.pk),
+                    self.prefix if include_prefix else '')
+
+    def theme_url(self):
+        if self.builtin:
+            return self.url
+        else:
+            return '/'.join([
+                    format(settings.MEDIA_URL) + 'themes', str(self.pk),
+                    self.prefix])
+
+
+class ThemeUserAgent(models.Model):
+    theme = models.ForeignKey(Theme, related_name='useragent_strings')
+    pattern = models.CharField(_('Pattern'), max_length=255)
+    allow = models.CharField(
+            verbose_name=_('Allow or deny'),
+            choices=[('allow', _('Allow')), ('deny', _('Deny'))],
+            max_length=10)
+    sort = models.IntegerField(_('sort'), blank=True, null=True)
+
+    def __unicode__(self):
+        return ' '.join([self.allow, self.pattern])
+
+    def save(self, *args, **kwargs):
+        if not self.sort:
+            max = self.theme.useragent_strings.aggregate(Max('sort'))['sort__max']
+            self.sort = (max or 0) + 1
+        super(ThemeUserAgent, self).save(*args, **kwargs)
+
