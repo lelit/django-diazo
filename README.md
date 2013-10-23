@@ -33,6 +33,24 @@ settings file. It's just a good practice:
     PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))  # Level of manage.py
     BASE_DIR = os.path.dirname(PROJECT_DIR)  # Level of virtualenv
 
+
+~~~~~~~
+wsgi.py
+~~~~~~~
+
+Add the following lines to your ``wsgi.py`` file:
+
+::
+
+    # Apply WSGI middleware here.
+    from django_diazo.wsgi import DiazoMiddlewareWrapper
+    application = DiazoMiddlewareWrapper(application)
+
+
+~~~~~~~~~~~~~~~~~~~~~
+Create built-in theme
+~~~~~~~~~~~~~~~~~~~~~
+
 You might want to supply your Django application with an out-of-the-box
 theme, probably also managed in a VCS.
 
@@ -48,24 +66,15 @@ this file is should be something like this:
         slug = 'bootstrap_theme'
     registry.register(BootstrapTheme)
 
+Don't forget to put your assets in the static folder, like an ``index.html`` and a ``rules.xml``. You can find a
+``rules.xml`` example in ``django_diazo/examples``.
+
 To synchronize the built-in themes with the database/application run the
 following command:
 
 ::
 
     python manage.py syncthemes
-
-~~~~~~~
-wsgi.py
-~~~~~~~
-
-Add the following lines to your ``wsgi.py`` file:
-
-::
-
-    # Apply WSGI middleware here.
-    from django_diazo.wsgi import DiazoMiddlewareWrapper
-    application = DiazoMiddlewareWrapper(application)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Database (South migrations)
