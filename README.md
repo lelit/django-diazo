@@ -71,48 +71,6 @@ the media folder. This implementation only servers files in the
 ``themes`` folder within the media folder but it would be better to
 serve these files using a web server and not via Django.
 
-CodeMirror
-----------
-
-Download `CodeMirror <http://codemirror.net/>`__.
-
-See https://pypi.python.org/pypi/django-codemirror-widget.
-
-You may want to add the (unpacked) CodeMirror download folder to your
-``STATICFILES_DIRS`` and run:
-
-    python manage.py collectstatic
-
-Specify ``CODEMIRROR_PATH`` in ``settings.py``.
-
-``CODEMIRROR_PATH`` is the URI of CodeMirror directory like
-``CODEMIRROR_PATH = r"javascript/codemirror"``. If you don't specify it,
-it defaults to ``'codemirror'``.
-
-CodeMirror download should be put there (unpacked).
-
-Settings
-
--  ``CODEMIRROR_PATH``
-
-   -  the URI of CodeMirror directory (your CodeMirror installation
-      should live in ``{{ STATIC_URL }}/{{ CODEMIRROR_PATH }}``)
-
--  ``CODEMIRROR_MODE``
-
-   -  the default mode which may be a string or configuration map
-      (DEFAULT: 'javascript')
-   -  Suggestion: ``'xml'``
-
--  ``CODEMIRROR_THEME``
-
-   -  the default theme applied (DEFAULT: 'default')
-
--  ``CODEMIRROR_CONFIG``
-
-   -  base mapping for the rest of the CodeMirror options (DEFAULT:
-      ``{ 'lineNumbers': True }``)
-
 Logging
 -------
 
@@ -157,3 +115,10 @@ transformation, add the following to ``settings.py``:
             ...
         },
     }
+
+Example themes / application
+----------------------------
+
+Take a look at https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo-themes and
+https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo-blog for examples of built-in themes and an integration
+example.

@@ -1,15 +1,12 @@
 import imp
-
 from django.conf import settings
+
+MODULE_NAME = 'diazo'
 
 def autodiscover():
     """
     Autodiscovers the 'diazo' module in project apps.
     """
-    from django.conf import settings
-
-    MODULE_NAME = 'diazo'
-
     for app in settings.INSTALLED_APPS:
         try:
             app_path = __import__(app, {}, {}, [app.split('.')[-1]]).__path__

@@ -1,5 +1,3 @@
-import os
-from django.conf import settings
 from django_diazo.models import Theme
 
 
@@ -8,4 +6,3 @@ def get_active_theme(request):
         if theme.available(request):
             return theme
     return None
-

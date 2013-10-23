@@ -23,7 +23,7 @@ class IFrameWidget(Widget):
             value = ''
         final_attrs = self.build_attrs(attrs, name=name)
         return mark_safe('<iframe{0} />',
-                           forms.util.flatatt(final_attrs))
+                         forms.util.flatatt(final_attrs))
 
 
 class ThemeForm(forms.ModelForm):
@@ -65,27 +65,29 @@ class UserAgentInline(admin.TabularInline):
 
 class ThemeAdmin(admin.ModelAdmin):
     inlines = [UserAgentInline]
-    list_display = ('name', 'enabled', 'debug',)
+    list_display = ('name', 'enabled', 'debug', 'sort',)
     actions = [enable_theme, enable_theme_with_debug, disable_theme]
     form = ThemeForm
 
     def get_fieldsets(self, request, obj=None):
-        """Hook for specifying fieldsets for the add form."""
+        """Hook for specifying fieldsets for the different forms."""
         if not obj:
             return (
-                (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
+                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort',)}),
+                #(None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
                 (_('Upload theme'), {'fields': ('upload',)}),
                 # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             )
         elif obj.builtin:
             return (
-                (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
-                (_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)})
+                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort',)}),
+                #(_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)})
                 # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             )
         else:
             return (
-                (None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
+                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort',)}),
+                #(None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
                 # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             )
 

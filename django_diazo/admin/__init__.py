@@ -1,2 +1,2 @@
-from .theme import *
-from .rule import *
+from django_diazo.admin.theme import *
+from django_diazo.admin.rule import *

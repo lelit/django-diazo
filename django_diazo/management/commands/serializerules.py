@@ -8,7 +8,7 @@ class WrongFormatException(Exception):
 
 
 class Command(BaseCommand):
-    help = _('Serialize a specifc theme to XML.')
+    help = _('Serialize the rules of a specific theme to XML.')
     requires_model_validation = True
 
     def handle(self, theme_id, filename, fmt='xml', **options):
