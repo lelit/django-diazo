@@ -65,7 +65,7 @@ class UserAgentInline(admin.TabularInline):
 
 class ThemeAdmin(admin.ModelAdmin):
     inlines = [UserAgentInline]
-    list_display = ('name', 'enabled', 'debug', 'sort',)
+    list_display = ('name', 'enabled', 'debug', 'sort', 'theme_url', 'theme_path',)
     actions = [enable_theme, enable_theme_with_debug, disable_theme]
     form = ThemeForm
 
@@ -75,7 +75,7 @@ class ThemeAdmin(admin.ModelAdmin):
             return (
                 (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort',)}),
                 #(None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
-                (_('Upload theme'), {'fields': ('upload',)}),
+                (_('Upload theme'), {'fields': ('upload', 'prefix',)}),
                 # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             )
         elif obj.builtin:
@@ -86,7 +86,7 @@ class ThemeAdmin(admin.ModelAdmin):
             )
         else:
             return (
-                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort',)}),
+                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
                 #(None, {'fields': ('name', 'slug', 'prefix', 'rules', 'enabled', 'debug')}),
                 # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             )
