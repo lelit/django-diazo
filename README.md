@@ -98,8 +98,8 @@ following to your ``urls.py``:
 
     if settings.DEBUG:
         urlpatterns += patterns('',
-           url(r'^%s/themes/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'), 'django.views.static.serve',
-               {'document_root': os.path.join(settings.MEDIA_ROOT, 'themes'), 'show_indexes': True}),
+            url(r'^%s/themes/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'), 'django.views.static.serve',
+                {'document_root': os.path.join(settings.MEDIA_ROOT, 'themes'), 'show_indexes': True}),
         )
 
 For production environments it is not recommended to serve files from
