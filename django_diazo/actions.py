@@ -7,7 +7,7 @@ def enable_theme(modeladmin, request, queryset):
         i.debug = False
         i.save()
         break
-enable_theme.short_description = _('Enable theme without debug')
+enable_theme.short_description = _('Enable theme')
 
 
 def enable_theme_with_debug(modeladmin, request, queryset):
