@@ -50,10 +50,6 @@ class ThemeForm(forms.ModelForm):
         if not os.path.exists(path):
             os.makedirs(path)
 
-        if instance.enabled:
-            for t in Theme.objects.all():
-                t.enabled = False
-                t.save()
         return instance
 
 

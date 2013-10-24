@@ -15,7 +15,7 @@ Installation
 settings.py
 ~~~~~~~~~~~~
 
-::
+Add the app::
 
     INSTALLED_APPS = (
         ...
@@ -24,9 +24,7 @@ settings.py
     )
 
 We highly recommend to use the following code as the first lines of your
-settings file. It's just a good practice:
-
-::
+settings file. It's just a good practice::
 
     import os
 
@@ -38,13 +36,20 @@ settings file. It's just a good practice:
 wsgi.py
 ~~~~~~~
 
-Add the following lines to your ``wsgi.py`` file:
-
-::
+Add the following lines to your ``wsgi.py`` file::
 
     # Apply WSGI middleware here.
     from django_diazo.wsgi import DiazoMiddlewareWrapper
     application = DiazoMiddlewareWrapper(application)
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Database (South migrations)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Migrate the database::
+
+    python manage.py migrate django_diazo
 
 
 ~~~~~~~~~~~~~~~~~~~~~
@@ -55,9 +60,7 @@ You might want to supply your Django application with an out-of-the-box
 theme, probably also managed in a VCS.
 
 Create a new app with a ``diazo.py`` file in its root. The contents of
-this file is should be something like this:
-
-::
+this file is should be something like this::
 
     from django_diazo.theme import DiazoTheme, registry
 
@@ -70,21 +73,9 @@ Don't forget to put your assets in the static folder, like an ``index.html`` and
 ``rules.xml`` example in ``django_diazo/examples``.
 
 To synchronize the built-in themes with the database/application run the
-following command:
-
-::
+following command::
 
     python manage.py syncthemes
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Database (South migrations)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Migrate the database:
-
-::
-
-    python manage.py migrate django_diazo
 
 ---------------
 Uploaded themes
@@ -92,9 +83,7 @@ Uploaded themes
 
 By default, the .zip files that are uploaded are extracted in the media
 folder. You might want to serve these files in debug mode. Add the
-following to your ``urls.py``:
-
-::
+following to your ``urls.py``::
 
     if settings.DEBUG:
         urlpatterns += patterns('',
@@ -112,9 +101,7 @@ Logging
 -------
 
 If you want logging of the errors that might occur in the Diazo
-transformation, add the following to ``settings.py``:
-
-::
+transformation, add the following to ``settings.py``::
 
     DIAZO_LOG_FILE = '/var/log/django_diazo.log'
 
@@ -162,3 +149,6 @@ Example themes / application
 Take a look at https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo-themes and
 https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo-blog for examples of built-in themes and an integration
 example.
+
+Our blog post (www.goldmund-wyldebeast-wunderliebe.com/tech-blog/blog-posts/using-diazo-in-django) also covers these
+examples and some more background.
