@@ -9,8 +9,6 @@ REQUIREMENTS = (
     'diazo>=1.0',
     'webob==1.2.3',
     'repoze.xmliter>=0.3',
-    'django-codemirror-widget>=0.3.0',
-    'django-polymorphic>=0.5.1',
 )
 TEST_REQUIREMENTS = (
 )
