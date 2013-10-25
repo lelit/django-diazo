@@ -82,19 +82,20 @@ Uploaded themes
 ---------------
 
 By default, the .zip files that are uploaded are extracted in the media
-folder. You might want to serve these files in debug mode. Add the
+folder. You might want to serve these files via Django. Add the
 following to your ``urls.py``::
 
-    if settings.DEBUG:
-        urlpatterns += patterns('',
-            url(r'^%s/themes/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'), 'django.views.static.serve',
-                {'document_root': os.path.join(settings.MEDIA_ROOT, 'themes'), 'show_indexes': True}),
-        )
+    urlpatterns += patterns('',
+        ...
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+        ...
+    )
 
 For production environments it is not recommended to serve files from
 the media folder. This implementation only servers files in the
 ``themes`` folder within the media folder but it would be better to
 serve these files using a web server and not via Django.
+The same holds for your ``static`` folder.
 
 -------
 Logging
