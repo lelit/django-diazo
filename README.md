@@ -11,25 +11,22 @@ The code is maintained on GitHub (https://github.com/Goldmund-Wyldebeast-Wunderl
 Installation
 ------------
 
+Install the package::
+
+    pip install django-diazo
+
+
 ~~~~~~~~~~~~
 settings.py
 ~~~~~~~~~~~~
 
-Add the app::
+Add the app to your project::
 
     INSTALLED_APPS = (
         ...
         'django_diazo',
         ...
     )
-
-We highly recommend to use the following code as the first lines of your
-settings file. It's just a good practice::
-
-    import os
-
-    PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))  # Level of manage.py
-    BASE_DIR = os.path.dirname(PROJECT_DIR)  # Level of virtualenv
 
 
 ~~~~~~~
@@ -52,9 +49,9 @@ Migrate the database::
     python manage.py migrate django_diazo
 
 
-~~~~~~~~~~~~~~~~~~~~~
-Create built-in theme
-~~~~~~~~~~~~~~~~~~~~~
+-----------------------
+Create a built-in theme
+-----------------------
 
 You might want to supply your Django application with an out-of-the-box
 theme, probably also managed in a VCS.
@@ -77,9 +74,10 @@ following command::
 
     python manage.py syncthemes
 
----------------
-Uploaded themes
----------------
+
+-------------
+Upload themes
+-------------
 
 By default, the .zip files that are uploaded are extracted in the media
 folder. You might want to serve these files via Django. Add the
@@ -96,6 +94,7 @@ the media folder. This implementation only servers files in the
 ``themes`` folder within the media folder but it would be better to
 serve these files using a web server and not via Django.
 The same holds for your ``static`` folder.
+
 
 -------
 Logging
@@ -151,5 +150,5 @@ Take a look at https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo-t
 https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo-blog for examples of built-in themes and an integration
 example.
 
-Our blog post (www.goldmund-wyldebeast-wunderliebe.com/tech-blog/blog-posts/using-diazo-in-django) also covers these
-examples and some more background.
+Our blog post http://www.goldmund-wyldebeast-wunderliebe.com/tech-blog/blog-posts/using-diazo-in-django also covers
+these examples and some more background.
