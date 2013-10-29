@@ -3,7 +3,6 @@ import zipfile
 from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from django_diazo.actions import enable_theme, enable_theme_with_debug, disable_theme
 from django_diazo.models import Theme, Rule, ThemeUserAgent
 
 
@@ -42,7 +41,6 @@ class ThemeAdmin(admin.ModelAdmin):
     list_editable = ('enabled', 'debug',)
     exclude = ('builtin', 'url', 'path',)
     list_filter = ('enabled', 'debug',)
-    actions = [enable_theme, enable_theme_with_debug, disable_theme]
     form = ThemeForm
 
     def get_fieldsets(self, request, obj=None):
