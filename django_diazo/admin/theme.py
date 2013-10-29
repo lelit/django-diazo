@@ -33,6 +33,7 @@ class ThemeForm(forms.ModelForm):
 
     class Meta:
         model = Theme
+        #exclude = ('builtin', 'url', 'path')
 
     def __init__(self, *args, **kwargs):
         super(ThemeForm, self).__init__(*args, **kwargs)
@@ -62,6 +63,7 @@ class UserAgentInline(admin.TabularInline):
 class ThemeAdmin(admin.ModelAdmin):
     inlines = [UserAgentInline]
     list_display = ('name', 'enabled', 'debug', 'sort', 'theme_url', 'theme_path',)
+    exclude = ('builtin', 'url', 'path')
     actions = [enable_theme, enable_theme_with_debug, disable_theme]
     form = ThemeForm
 
