@@ -76,7 +76,7 @@ class ThemeAdmin(admin.ModelAdmin):
             )
         elif obj.builtin:
             return (
-                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort',)}),
+                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
                 #(_('Built-in settings'), {'classes': ('collapse',), 'fields': ('path', 'url', 'builtin',)})
                 # (_('Preview'), {'classes': (), 'fields': ('preview',)}),
             )

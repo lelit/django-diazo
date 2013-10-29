@@ -18,6 +18,7 @@ setup(
     name="django_diazo",
     version=VERSION,
     author="Douwe van der Meij, Job Ganzevoort",
+    author_email="vandermeij@gw20e.com",
     description="""Integrate Diazo in Django using WSGI middleware and
     add/change themes using the Django Admin interface.
     """,
@@ -32,7 +33,8 @@ setup(
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+        'License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Framework :: Django',

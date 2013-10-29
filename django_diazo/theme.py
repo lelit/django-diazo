@@ -3,6 +3,7 @@
 class DiazoTheme(object):
     name = ''
     slug = ''
+    prefix = ''
 
 
 class ThemeRegistry(object):

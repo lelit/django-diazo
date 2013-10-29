@@ -1,1 +1,2 @@
-recursive-include django_diazo/examples *
+recursive-include examples *
+recursive-include django_diazo/contrib/themes *

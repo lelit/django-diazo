@@ -19,17 +19,24 @@ class Command(BaseCommand):
         themes = dict([(t.slug, t) for t in Theme.objects.filter(builtin=True)])
         # Add/modify themes
         for theme in registry.get_themes():
+            path = os.path.join(settings.STATIC_ROOT, theme.slug)
+            url = settings.STATIC_URL + theme.slug
+            if theme.prefix:
+                path = os.path.join(path, theme.prefix)
+                url += '/' + theme.prefix
             if theme.slug in themes:
-                themes[theme.slug].path = os.path.join(settings.STATIC_ROOT, theme.slug)
-                themes[theme.slug].url = settings.STATIC_URL + theme.slug
+                themes[theme.slug].path = path
+                themes[theme.slug].url = url
+                themes[theme.slug].prefix = theme.prefix
                 themes[theme.slug].save()
                 themes.pop(theme.slug)
             else:
                 Theme.objects.create(
                     name=theme.name,
                     slug=theme.slug,
-                    path=os.path.join(settings.STATIC_ROOT, theme.slug),
-                    url=settings.STATIC_URL + theme.slug,
+                    prefix=theme.prefix,
+                    path=path,
+                    url=url,
                     builtin=True
                 )
                 logger.info('Added new theme with name \'{0}\'.'.format(theme.name))
