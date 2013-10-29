@@ -322,7 +322,7 @@ each source file to most effectively convey the exclusion of warranty; and each 
 "copyright" line and a pointer to where the full notice is found.
 
 This project, named django-diazo, aims to simplify the use of Diazo in Django applications.
-Furthermore is gives some enabled a new range of features and controls.
+Furthermore it enables a new range of features and controls.
 Copyright (C) 2013 Douwe van der Meij
 
 This library is free software; you can redistribute it and/or
