@@ -63,7 +63,9 @@ class UserAgentInline(admin.TabularInline):
 class ThemeAdmin(admin.ModelAdmin):
     inlines = [UserAgentInline]
     list_display = ('name', 'enabled', 'debug', 'sort', 'theme_url', 'theme_path',)
-    exclude = ('builtin', 'url', 'path')
+    list_editable = ('enabled', 'debug',)
+    exclude = ('builtin', 'url', 'path',)
+    list_filter = ('enabled', 'debug',)
     actions = [enable_theme, enable_theme_with_debug, disable_theme]
     form = ThemeForm
 
