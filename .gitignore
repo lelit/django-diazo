@@ -1,2 +1,6 @@
 .idea
 *.pyc
+.gitignore~
+build/
+dist/
+django_diazo.egg-info/
