@@ -4,7 +4,8 @@ from diazo.wsgi import DiazoMiddleware
 from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.handlers.wsgi import WSGIRequest
-from utils import get_active_theme
+from django_diazo.utils import get_active_theme
+from django_diazo.settings import DOCTYPE
 
 
 class DiazoMiddlewareWrapper(object):
@@ -55,6 +56,7 @@ class DiazoMiddlewareWrapper(object):
                         global_conf=None,
                         rules=rules_file,
                         prefix=theme.theme_url(),
+                        doctype=DOCTYPE,
                     )
                 try:
                     return self.diazo(environ, start_response)

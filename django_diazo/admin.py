@@ -3,7 +3,7 @@ import zipfile
 from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from django_diazo.models import Theme, Rule, ThemeUserAgent
+from django_diazo.models import Theme, ThemeUserAgent
 
 
 class ThemeForm(forms.ModelForm):
@@ -54,12 +54,6 @@ class ThemeAdmin(admin.ModelAdmin):
             return (
                 (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
             )
-
-    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
-        if db_field.name == 'rules':
-            kwargs['queryset'] = Rule.objects.filter(root=True)
-            return db_field.formfield(**kwargs)
-        return super(ThemeAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 admin.site.register(Theme, ThemeAdmin)
