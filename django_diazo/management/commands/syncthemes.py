@@ -19,7 +19,7 @@ class Command(BaseCommand):
         themes = dict([(t.slug, t) for t in Theme.objects.filter(builtin=True)])
         # Add/modify themes
         for theme in registry.get_themes():
-            path = os.path.join(settings.STATIC_ROOT, theme.slug)
+            path = theme.slug
             url = settings.STATIC_URL + theme.slug
             if theme.prefix:
                 path = os.path.join(path, theme.prefix)
