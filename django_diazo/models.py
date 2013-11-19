@@ -42,7 +42,7 @@ class Theme(models.Model):
 
     def theme_path(self, include_prefix=True):
         if self.builtin:
-            return self.path
+            return os.path.join(settings.STATIC_ROOT, self.path)
         else:
             return os.path.join(
                 format(settings.MEDIA_ROOT), 'themes', str(self.pk),
