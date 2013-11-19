@@ -45,15 +45,10 @@ class ThemeAdmin(admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         """Hook for specifying fieldsets for the different forms."""
-        if not obj:
-            return (
-                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
-                (_('Upload theme'), {'fields': ('upload',)}),
-            )
-        elif obj.builtin:
-            return (
-                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
-            )
+        return (
+            (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
+            (_('Upload theme'), {'fields': ('upload',)}) if not obj else (),
+        )
 
 
 admin.site.register(Theme, ThemeAdmin)
