@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules
+    xmlns="http://namespaces.plone.org/diazo"
+    xmlns:css="http://namespaces.plone.org/diazo/css"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- Append scripts and meta to head -->
+  <append css:theme="head"
+          css:content="head script" />
+  <append css:theme="head"
+          css:content="head meta" />
+
+  <!-- Title of the page -->
+  <replace css:theme-children="title"
+           css:content-children="title"/>
+
+  <!-- Title -->
+  <replace css:theme-children="a.navbar-brand"
+           css:content-children="#site-name"/>
+
+  <!-- Breadcrumbs -->
+  <rules css:if="div.breadcrumbs">
+    <before css:theme-children="div#content div.container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <xsl:for-each css:select="div.breadcrumbs a">
+              <li>
+                <xsl:copy-of select="."/>
+              </li>
+            </xsl:for-each>
+            <li class="active">
+              <xsl:value-of select="substring(//div[contains(@class, 'breadcrumbs')]/text()[last()], 4)"/>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </before>
+  </rules>
+
+  <!-- User tools -->
+  <!--replace css:theme-children="div.navbar-right p"
+           css:content-children="#user-tools"/-->
+
+  <!--replace content="//a/@class | //input[@type='submit']/@class | //button[@type='submit']/@class">
+    <xsl:attribute name="class">
+      <xsl:value-of select="."/>
+      btn btn-primary
+    </xsl:attribute>
+  </replace-->
+
+  <!-- Content -->
+  <!--replace css:theme="#content"
+           css:content="#content" /-->
+</rules>

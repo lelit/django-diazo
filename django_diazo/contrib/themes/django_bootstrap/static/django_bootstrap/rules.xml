@@ -5,43 +5,46 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <!-- Nifty output settings -->
-    <xsl:strip-space elements="*"/>
-    <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
+  <!-- Nifty output settings -->
+  <xsl:strip-space elements="*"/>
+  <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
-    <!-- Identify Django error page -->
-    <xsl:variable name="django_error" select="//body/div[@id='summary'] and //body/div[@id='traceback'] and
-    //body/div[@id='requestinfo'] and //body/div[@id='explanation']" />
+  <!-- Identify Django error page -->
+  <xsl:variable name="django_error" select="//body/div[@id='summary'] and //body/div[@id='traceback'] and
+    //body/div[@id='requestinfo'] and //body/div[@id='explanation']"/>
 
-    <!-- Skip Diazo -->
-    <notheme if="$django_error" /><!-- Django Error -->
+  <!-- Skip Diazo -->
+  <notheme if="$django_error"/>
+  <!-- Django Error -->
 
-    <!-- Login page-->
-    <xsl:variable name="django_login" select="//body[@class='login']" />
-    <rules if="$django_login">
-        <theme href="login.html" />
-        <xi:include href="login.xml" />
-    </rules>
+  <!-- Login page-->
+  <xsl:variable name="django_login" select="//body[@class='login']"/>
+  <rules if="$django_login">
+    <theme href="login.html"/>
+    <xi:include href="login.xml"/>
+  </rules>
 
-    <theme href="index.html" />
+  <!-- Dashboard -->
+  <xsl:variable name="dashboard" css:select="body.dashboard"/>
+  <rules if="$dashboard">
+    <xi:include href="dashboard.xml"/>
+  </rules>
 
-    <!-- Title of the page -->
-    <replace css:theme-children="title"
-             css:content-children="title" />
+  <!-- Change-list -->
+  <xsl:variable name="change-list" css:select="body.change-list"/>
+  <rules if="$change-list">
+    <xi:include href="change-list.xml"/>
+  </rules>
 
-    <!-- Title -->
-    <replace css:theme-children="a.navbar-brand"
-             css:content-children="#site-name" />
+  <!-- Change form -->
+  <xsl:variable name="change-form" css:select="body.change-form"/>
+  <notheme if="$change-form"/>
+  <rules if="$change-form">
+    <xi:include href="change-form.xml"/>
+  </rules>
 
-    <!-- User tools -->
-    <replace css:theme-children="div.navbar-right p"
-             css:content-children="#user-tools" />
+  <theme href="index.html"/>
 
-    <replace content="//a/@class | //input[@type='submit']/@class | //button[@type='submit']/@class">
-        <xsl:attribute name="class"><xsl:value-of select="." /> btn btn-primary</xsl:attribute>
-    </replace>
+  <xi:include href="defaults.xml"/>
 
-    <!-- Content -->
-    <replace css:theme="#content"
-             css:content="#content" />
 </rules>

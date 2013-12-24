@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules
+    xmlns="http://namespaces.plone.org/diazo"
+    xmlns:css="http://namespaces.plone.org/diazo/css"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <append css:theme="head">
+    <style>
+      #changelist .actions span.all,
+      #changelist .actions span.action-counter,
+      #changelist .actions span.clear,
+      #changelist .actions span.question {
+      display: none;
+      }
+    </style>
+  </append>
+
+  <append css:theme="#content div.container">
+
+    <!-- Title -->
+    <div class="row">
+      <div class="col-md-12">
+        <xsl:copy-of css:select="#content h1"/>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="row">
+      <div class="col-md-12">
+        <p>
+          <xsl:for-each css:select="ul.object-tools li">
+            <xsl:element name="a">
+              <xsl:attribute name="href">
+                <xsl:value-of select="./a/@href"/>
+              </xsl:attribute>
+              <xsl:attribute name="class">btn btn-primary</xsl:attribute>
+              <xsl:value-of select="./a"/>
+            </xsl:element>
+          </xsl:for-each>
+        </p>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <xsl:variable name="toolbar" css:select="#toolbar"/>
+    <xsl:if test="$toolbar">
+      <div class="row">
+        <div class="col-md-12">
+          <xsl:element name="form">
+            <xsl:attribute name="id">
+              <xsl:value-of select="$toolbar/form/@id"/>
+            </xsl:attribute>
+            <xsl:attribute name="action">
+              <xsl:value-of select="$toolbar/form/@action"/>
+            </xsl:attribute>
+            <xsl:attribute name="method">
+              <xsl:value-of select="$toolbar/form/@method"/>
+            </xsl:attribute>
+
+            <div class="form-group">
+              <!-- Submit -->
+
+            </div>
+          </xsl:element>
+        </div>
+      </div>
+    </xsl:if>
+
+    <xsl:variable name="changelist-form" select="//form[@id='changelist-form']"/>
+    <xsl:element name="form">
+
+      <xsl:attribute name="id">
+        <xsl:value-of select="$changelist-form/@id"/>
+      </xsl:attribute>
+      <xsl:attribute name="action">
+        <xsl:value-of select="$changelist-form/@action"/>
+      </xsl:attribute>
+      <xsl:attribute name="method">
+        <xsl:value-of select="$changelist-form/@method"/>
+      </xsl:attribute>
+
+      <xsl:attribute name="class">form-inline</xsl:attribute>
+      <xsl:attribute name="role">form</xsl:attribute>
+
+      <xsl:copy-of select="$changelist-form//input[@type='hidden']"/>
+      <xsl:copy-of select="$changelist-form//script"/>
+
+      <!-- Actions -->
+      <xsl:if css:test="div.actions">
+        <div class="row" id="changelist">
+          <div class="col-md-12 actions">
+            <p>
+
+              <xsl:variable name="actions" css:select="div.actions"/>
+
+              <!-- Label -->
+              <div class="form-group">
+                <label>
+                  <xsl:copy-of select="$actions/label/text()"/>
+                </label>
+              </div>
+
+              <!-- Dropdown -->
+              <div class="form-group">
+                <select class="form-control input-sm" name="action">
+                  <xsl:copy-of select="$actions/label/select[@name='action']/*"/>
+                </select>
+              </div>
+
+              <!-- Submit -->
+              <div class="form-group">
+                <xsl:element name="button">
+                  <xsl:attribute name="title">
+                    <xsl:value-of select="$actions/button[@type='submit']/@title"/>
+                  </xsl:attribute>
+                  <xsl:attribute name="name">
+                    <xsl:value-of select="$actions/button[@type='submit']/@name"/>
+                  </xsl:attribute>
+                  <xsl:attribute name="value">
+                    <xsl:value-of select="$actions/button[@type='submit']/@value"/>
+                  </xsl:attribute>
+                  <xsl:attribute name="type">submit</xsl:attribute>
+                  <xsl:attribute name="class">btn btn-default btn-sm</xsl:attribute>
+                  <xsl:value-of select="$actions/button[@type='submit']/text()"/>
+                </xsl:element>
+              </div>
+
+              <!-- Select all etc. -->
+              <div class="form-group">
+                <xsl:for-each select="$actions/span">
+                  <span>
+                    <xsl:copy-of select="."/>
+                  </span>
+                </xsl:for-each>
+              </div>
+
+            </p>
+          </div>
+        </div>
+      </xsl:if>
+
+      <!-- Table -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <xsl:copy-of select="//table[@id='result_list']/*"/>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <xsl:if css:test="p.paginator > *">
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="pagination">
+              <xsl:for-each css:select="p.paginator > *">
+                <xsl:element name="li">
+                  <xsl:choose>
+                    <xsl:when test="contains(./@class, 'this-page')">
+                      <xsl:attribute name="class">active</xsl:attribute>
+                    </xsl:when>
+                  </xsl:choose>
+                  <xsl:copy-of select="."/>
+                </xsl:element>
+              </xsl:for-each>
+            </ul>
+          </div>
+        </div>
+      </xsl:if>
+
+      <!-- Number of items -->
+      <xsl:if test="//p[contains(@class, 'paginator')]">
+        <div class="row">
+          <div class="col-md-12">
+            <h4>
+              <span class="label label-default">
+                <xsl:value-of select="//p[contains(@class, 'paginator')]/text()[last()]"/>
+              </span>
+            </h4>
+          </div>
+        </div>
+      </xsl:if>
+
+    </xsl:element>
+
+  </append>
+
+</rules>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules
+    xmlns="http://namespaces.plone.org/diazo"
+    xmlns:css="http://namespaces.plone.org/diazo/css"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <append css:theme="#content div.container">
+
+    <xsl:copy-of css:select="#content h1"/>
+
+    <div class="row">
+
+      <div class="col-md-6">
+        <xsl:for-each css:select="#content-main div.module">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <xsl:copy-of css:select="caption"/>
+              </h3>
+            </div>
+            <ul class="list-group">
+              <xsl:for-each css:select="tr">
+                <li class="list-group-item">
+                  <xsl:copy-of select="th/*"/>
+                  <div class="pull-right">
+                    <xsl:element name="a">
+                      <xsl:attribute name="href">
+                        <xsl:value-of select="td[1]/a/@href"/>
+                      </xsl:attribute>
+                      <xsl:attribute name="class">btn btn-primary btn-xs</xsl:attribute>
+                      <xsl:copy-of select="td[1]/a/text()"/>
+                    </xsl:element>
+                    <xsl:element name="a">
+                      <xsl:attribute name="href">
+                        <xsl:value-of select="td[2]/a/@href"/>
+                      </xsl:attribute>
+                      <xsl:attribute name="class">btn btn-default btn-xs</xsl:attribute>
+                      <xsl:copy-of select="td[2]/a/text()"/>
+                    </xsl:element>
+                  </div>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </div>
+        </xsl:for-each>
+      </div>
+
+      <xsl:if css:test="#content-related">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <xsl:value-of css:select="#content-related div.module h2"/>
+              </h3>
+            </div>
+            <div class="panel-body">
+              <h4>
+                <xsl:value-of css:select="#content-related div.module h3"/>
+              </h4>
+            </div>
+            <ul class="list-group">
+              <xsl:for-each css:select="#content-related div.module li">
+                <li class="list-group-item">
+                  <xsl:choose>
+                    <xsl:when test="contains(./@class, 'addlink')">
+                      <span class="glyphicon glyphicon-plus"/>
+                      <span>
+                        <xsl:copy-of select="./*"/>
+                      </span>
+                    </xsl:when>
+                    <xsl:when test="contains(./@class, 'changelink')">
+                      <span class="glyphicon glyphicon-pencil"/>
+                      <span>
+                        <xsl:copy-of select="./*"/>
+                      </span>
+                    </xsl:when>
+                    <xsl:when test="contains(./@class, 'deletelink')">
+                      <span class="glyphicon glyphicon-trash"/>
+                      <span>
+                        <xsl:value-of select="./text()"/>
+                        <xsl:copy-of select="./*"/>
+                      </span>
+                    </xsl:when>
+                  </xsl:choose>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </div>
+        </div>
+      </xsl:if>
+
+    </div>
+
+  </append>
+
+</rules>
