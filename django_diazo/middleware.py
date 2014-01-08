@@ -3,11 +3,8 @@ from lxml import etree
 from logging import getLogger
 from diazo.wsgi import DiazoMiddleware
 from diazo.utils import quote_param
-from django.conf import settings
-from django.contrib.sessions.backends.db import SessionStore
-from django_diazo.utils import get_active_theme
 from repoze.xmliter.serializer import XMLSerializer
-
+from django_diazo.utils.common import get_active_theme, themes_enabled
 from django_diazo.settings import DOCTYPE
 
 
@@ -22,19 +19,14 @@ class DjangoDiazoMiddleware(object):
         self.transform = None
         self.params = {}
 
-    def themes_enabled(self, request):
-        """
-        Check if themes are enabled for the current session/request.
-        """
-        if settings.DEBUG and request.GET.get('theme') == 'none':
-            return False
-        if 'sessionid' not in request.COOKIES:
-            return True
-        session = SessionStore(session_key=request.COOKIES['sessionid'])
-        return session.get('django_diazo_theme_enabled', True)
-
     def process_response(self, request, response):
-        if self.themes_enabled(request):
+        """
+        This code will be executed every time a call is made to the server; on every request.
+        When a theme is enabled, lookup the rules.xml file, overwrite the file when changes are made in the Django
+        Admin interface (currently disabled) and initialize the DiazoMiddleware.
+        When DiazoMiddleware fails, fall-back to the normal Django application and log the error.
+        """
+        if themes_enabled(request):
             theme = get_active_theme(request)
             if theme:
                 rules_file = os.path.join(theme.theme_path(), 'rules.xml')
@@ -56,6 +48,7 @@ class DjangoDiazoMiddleware(object):
                         prefix=theme.theme_url(),
                         doctype=DOCTYPE,
                     )
+
                     compiled_theme = self.diazo.compile_theme()
                     self.transform = etree.XSLT(compiled_theme, access_control=self.diazo.access_control)
                     self.params = {}
