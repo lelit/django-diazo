@@ -2,8 +2,7 @@
 Django Diazo
 ============
 
-Integrate Diazo in Django using WSGI middleware and add/change themes
-using the Django Admin interface.
+Integrate Diazo in Django using Django- or WSGI-middleware and control themes using the Django Admin interface.
 
 The code is maintained on GitHub (https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo).
 
@@ -28,12 +27,19 @@ Add the app to your project::
         ...
     )
 
+Add Django middleware::
 
-~~~~~~~
-wsgi.py
-~~~~~~~
+    MIDDLEWARE_CLASSES = (
+        'django_diazo.middleware.DjangoDiazoMiddleware',
+        ...
+    )
 
-Add the following lines to your ``wsgi.py`` file::
+
+~~~~~~~~~~~~~~~~~~
+wsgi.py (Optional)
+~~~~~~~~~~~~~~~~~~
+
+You may choose to use wsgi middleware instead of the Django middleware::
 
     # Apply WSGI middleware here.
     from django_diazo.wsgi import DiazoMiddlewareWrapper
@@ -94,53 +100,6 @@ the media folder. This implementation only servers files in the
 ``themes`` folder within the media folder but it would be better to
 serve these files using a web server and not via Django.
 The same holds for your ``static`` folder.
-
-
--------
-Logging
--------
-
-If you want logging of the errors that might occur in the Diazo
-transformation, add the following to ``settings.py``::
-
-    DIAZO_LOG_FILE = '/var/log/django_diazo.log'
-
-    LOGGING = {
-        'formatters': {
-            ...
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-            },
-            'simple': {
-                'format': '%(levelname)s %(message)s'
-            },
-            ...
-        },
-        'handlers': {
-            ...
-            'django_diazo_file': {
-                'level': 'INFO',
-                'class': 'logging.FileHandler',
-                'formatter': 'verbose',
-                'filename': DIAZO_LOG_FILE,
-            },
-            'console':{
-                'level': 'INFO',
-                'class': 'logging.StreamHandler',
-                'formatter': 'simple'
-            },
-            ...
-        },
-        'loggers': {
-            ...
-            'django_diazo': {
-                'handlers': ['django_diazo_file', 'console'],
-                'level': 'INFO',
-                'propagate': True,
-            },
-            ...
-        },
-    }
 
 ----------------------------
 Example themes / application

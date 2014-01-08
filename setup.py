@@ -19,9 +19,7 @@ setup(
     version=VERSION,
     author="Douwe van der Meij, Job Ganzevoort",
     author_email="vandermeij@gw20e.com",
-    description="""Integrate Diazo in Django using WSGI middleware and
-    add/change themes using the Django Admin interface.
-    """,
+    description="Use Diazo in Django",
     long_description=open('README.md', 'rt').read(),
     url="https://github.com/Goldmund-Wyldebeast-Wunderliebe/django-diazo",
     packages=find_packages(),
