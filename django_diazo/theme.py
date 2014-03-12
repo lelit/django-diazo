@@ -4,6 +4,7 @@ class DiazoTheme(object):
     name = ''
     slug = ''
     prefix = ''
+    pattern = '.*'
 
 
 class ThemeRegistry(object):
