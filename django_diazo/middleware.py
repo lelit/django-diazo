@@ -6,6 +6,7 @@ from diazo.utils import quote_param
 from repoze.xmliter.serializer import XMLSerializer
 from django_diazo.utils.common import get_active_theme, themes_enabled
 from django_diazo.settings import DOCTYPE
+from webob import Request
 
 
 class DjangoDiazoMiddleware(object):
@@ -18,6 +19,7 @@ class DjangoDiazoMiddleware(object):
         self.diazo = None
         self.transform = None
         self.params = {}
+        self.transform_middleware = None
 
     def process_response(self, request, response):
         """
@@ -48,6 +50,7 @@ class DjangoDiazoMiddleware(object):
                         prefix=theme.theme_url(),
                         doctype=DOCTYPE,
                     )
+                    self.transform_middleware = self.diazo.get_transform_middleware()
 
                     compiled_theme = self.diazo.compile_theme()
                     self.transform = etree.XSLT(compiled_theme, access_control=self.diazo.access_control)
@@ -60,9 +63,11 @@ class DjangoDiazoMiddleware(object):
                                 self.params[value] = quote_param(request.environ[key])
 
                 try:
-                    content = etree.fromstring(response.content, etree.HTMLParser())
-                    result = self.transform(content, **self.params)
-                    response.content = XMLSerializer(result, doctype=DOCTYPE).serialize()
+                    # response.content = self.diazo(request.environ, start_response).serialize()
+                    if not self.transform_middleware.should_ignore(Request(request.environ)):
+                        content = etree.fromstring(response.content, etree.HTMLParser())
+                        result = self.transform(content, **self.params)
+                        response.content = XMLSerializer(result, doctype=DOCTYPE).serialize()
                 except Exception, e:
                     getLogger('django_diazo').error(e)
         return response
