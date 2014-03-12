@@ -1,4 +1,5 @@
 import os
+import re
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -11,15 +12,21 @@ class Theme(models.Model):
     prefix = models.CharField(_('Prefix'), max_length=255, blank=True,
                               help_text=_('The path to the html and rules.xml file.'))
     enabled = models.BooleanField(_('Enabled'), default=False,
-                                  help_text=_('Enable this theme (and disable the current, if enabled).'))
+                                  help_text=_('Enable this theme.'))
     debug = models.BooleanField(_('Debug'), default=False,
                                 help_text=_('Reload theme on every request (vs. reload on changing themes).'))
+
+    pattern = models.CharField(_('Pattern'), max_length=255, default='.*',
+                               help_text=_('Select this theme when this pattern matches the requested url.'))
 
     sort = models.IntegerField(_('sort'), blank=True, null=True,
                                help_text=_('The order in which the themes will be loaded (the lower, the earlier).'))
     path = models.CharField(_('Path'), blank=True, null=True, max_length=255)
     url = models.CharField(_('Url'), blank=True, null=True, max_length=255)
     builtin = models.BooleanField(_('Built-in'), default=False)
+
+    class Meta:
+        ordering = ('sort',)
 
     def __unicode__(self):
         return self.name
@@ -31,6 +38,15 @@ class Theme(models.Model):
         super(Theme, self).save(*args, **kwargs)
 
     def available(self, request):
+        """
+        First check theme pattern for url, second test user agent
+        """
+        try:
+            if not re.search(self.pattern, request.path):
+                return False
+        except:
+            return False
+
         try:
             ua = request.META['HTTP_USER_AGENT']
         except:

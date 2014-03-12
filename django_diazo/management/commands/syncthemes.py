@@ -37,7 +37,8 @@ class Command(BaseCommand):
                     prefix=theme.prefix,
                     path=path,
                     url=url,
-                    builtin=True
+                    builtin=True,
+                    pattern=theme.pattern
                 )
                 logger.info('Added new theme with name \'{0}\'.'.format(theme.name))
         # Delete themes

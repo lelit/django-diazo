@@ -67,10 +67,11 @@ this file is should be something like this::
 
     from django_diazo.theme import DiazoTheme, registry
 
-    class BootstrapTheme(DiazoTheme):
-        name = 'Bootstrap Theme'
-        slug = 'bootstrap_theme'
-    registry.register(BootstrapTheme)
+    class SomeTheme(DiazoTheme):
+        name = 'Some Theme'
+        slug = 'some_theme'
+        pattern = '^(?!/admin)'  # Theme everything but /admin
+    registry.register(SomeTheme)
 
 Don't forget to put your assets in the static folder, like an ``index.html`` and a ``rules.xml``. You can find a
 ``rules.xml`` example in ``django_diazo/examples``.

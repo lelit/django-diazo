@@ -37,8 +37,8 @@ class UserAgentInline(admin.TabularInline):
 
 class ThemeAdmin(admin.ModelAdmin):
     inlines = [UserAgentInline]
-    list_display = ('name', 'enabled', 'debug', 'sort', 'theme_url', 'theme_path',)
-    list_editable = ('enabled', 'debug',)
+    list_display = ('name', 'enabled', 'pattern', 'sort', 'debug',)
+    list_editable = ('enabled', 'pattern', 'debug', 'sort',)
     exclude = ('builtin', 'url', 'path',)
     list_filter = ('enabled', 'debug',)
     form = ThemeForm
@@ -47,11 +47,11 @@ class ThemeAdmin(admin.ModelAdmin):
         """Hook for specifying fieldsets for the different forms."""
         if not obj:
             return (
-                (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
+                (None, {'fields': ('name', 'slug', 'enabled', 'pattern', 'sort', 'prefix', 'debug',)}),
                 (_('Upload theme'), {'fields': ('upload',)}),
             )
         return (
-            (None, {'fields': ('name', 'slug', 'enabled', 'debug', 'sort', 'prefix',)}),
+            (None, {'fields': ('name', 'slug', 'enabled', 'pattern', 'sort', 'prefix', 'debug',)}),
         )
 
 
