@@ -28,12 +28,24 @@ Add the app to your project::
         ...
     )
 
+Add middleware (or WSGI, see below)::
+
+    MIDDLEWARE_CLASSES += (
+        'django_diazo.middleware.DjangoDiazoMiddleware',
+    )
+
+!! IMPORTANT !!
+Note that when using the Django middleware instrumentation the Diazo ``<notheme />`` rules won't work.
+You have to provide regular expression patterns in ``Theme.pattern`` to prevent some pages (by url) to be themed.
+Also note that content based ``<notheme />`` also won't work. If you want to disable a theme by certain content,
+for example a body class attribute, use WSGI middleware instead.
 
 ~~~~~~~
 wsgi.py
 ~~~~~~~
 
-Add the following lines to your ``wsgi.py`` file::
+If you rather use WSGI than Django middleware or you have to (at the moment) since you use exotic ``<notheme />`` rules,
+add the following lines to your ``wsgi.py`` file::
 
     # Apply WSGI middleware here.
     from django_diazo.wsgi import DiazoMiddlewareWrapper
