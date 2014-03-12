@@ -61,10 +61,11 @@ this file is should be something like this::
 
     from django_diazo.theme import DiazoTheme, registry
 
-    class BootstrapTheme(DiazoTheme):
-        name = 'Bootstrap Theme'
-        slug = 'bootstrap_theme'
-    registry.register(BootstrapTheme)
+    class SomeTheme(DiazoTheme):
+        name = 'Some Theme'
+        slug = 'some_theme'
+        pattern = '^(?!/admin)'  # Theme everything but /admin
+    registry.register(SomeTheme)
 
 Don't forget to put your assets in the static folder, like an ``index.html`` and a ``rules.xml``. You can find a
 ``rules.xml`` example in ``django_diazo/examples``.
@@ -94,53 +95,6 @@ the media folder. This implementation only servers files in the
 ``themes`` folder within the media folder but it would be better to
 serve these files using a web server and not via Django.
 The same holds for your ``static`` folder.
-
-
--------
-Logging
--------
-
-If you want logging of the errors that might occur in the Diazo
-transformation, add the following to ``settings.py``::
-
-    DIAZO_LOG_FILE = '/var/log/django_diazo.log'
-
-    LOGGING = {
-        'formatters': {
-            ...
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-            },
-            'simple': {
-                'format': '%(levelname)s %(message)s'
-            },
-            ...
-        },
-        'handlers': {
-            ...
-            'django_diazo_file': {
-                'level': 'INFO',
-                'class': 'logging.FileHandler',
-                'formatter': 'verbose',
-                'filename': DIAZO_LOG_FILE,
-            },
-            'console':{
-                'level': 'INFO',
-                'class': 'logging.StreamHandler',
-                'formatter': 'simple'
-            },
-            ...
-        },
-        'loggers': {
-            ...
-            'django_diazo': {
-                'handlers': ['django_diazo_file', 'console'],
-                'level': 'INFO',
-                'propagate': True,
-            },
-            ...
-        },
-    }
 
 ----------------------------
 Example themes / application
