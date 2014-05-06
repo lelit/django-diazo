@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from lxml.etree import tostring
 from repoze.xmliter.serializer import XMLSerializer
 
-from django_diazo.settings import DOCTYPE
+from django_diazo.settings import DOCTYPE, ALLOWED_CONTENT_TYPES
 from django_diazo.utils import get_active_theme, check_themes_enabled
 
 
@@ -49,37 +49,45 @@ class DjangoDiazoMiddleware(object):
         self.params = {}
 
     def should_transform(self, response):
-        """Determine if we should transform the response
+        """
+        Determine if we should transform the response
         """
 
-        if asbool(response.headers.get(DIAZO_OFF_HEADER, 'no')):
+        if asbool(response.get(DIAZO_OFF_HEADER, 'no')):
             return False
 
-        content_type = response.headers.get('Content-Type')
-        if not content_type or not (
-                    content_type.lower().startswith('text/html') or
-                    content_type.lower().startswith('application/xhtml+xml')
-        ):
+        content_type = response.get('Content-Type', '')
+        if not content_type:
             return False
 
-        content_encoding = response.headers.get('Content-Encoding')
+        no_diazo = True
+        for content_type in ALLOWED_CONTENT_TYPES:
+            if content_type in response.get('Content-Type', ''):
+                no_diazo = False
+                break
+        if no_diazo:
+            return False
+
+        content_encoding = response.get('Content-Encoding')
         if content_encoding in ('zip', 'deflate', 'compress',):
             return False
 
-        status_code, reason = response.status.split(None, 1)
-        if status_code.startswith('3') or \
-                        status_code == '204' or \
-                        status_code == '401':
+        if 300 <= response.status_code <= 399 or response.status_code in [204, 401]:
             return False
 
-        if response.content_length == 0:
+        if len(response.content) == 0:
             return False
 
         return True
 
     def process_response(self, request, response):
-        # if response.get('Content-Type') in ['text/javascript']:
-        #     return response  # maar dat wat netter; enkel html doorlaten ofzo
+        """
+        Transform the response with Diazo if transformable
+        """
+
+        if not self.should_transform(response):
+            return response
+
         content = response
         if check_themes_enabled(request):
             theme = get_active_theme(request)
