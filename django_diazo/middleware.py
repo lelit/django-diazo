@@ -1,20 +1,46 @@
+from cms.constants import RIGHT
+from cms.toolbar.items import TemplateItem
 import os
 from lxml import etree
 from logging import getLogger
-from diazo.wsgi import DiazoMiddleware
+from diazo.wsgi import DiazoMiddleware, asbool, DIAZO_OFF_HEADER
 from diazo.utils import quote_param
-from django.conf import settings
-from django.contrib.sessions.backends.db import SessionStore
-from django_diazo.utils import get_active_theme
+from django.http import HttpResponse
+from lxml.etree import tostring
 from repoze.xmliter.serializer import XMLSerializer
 
 from django_diazo.settings import DOCTYPE
+from django_diazo.utils import get_active_theme, check_themes_enabled
+
+
+class DjangoCmsDiazoMiddleware(object):
+    """
+    Django CMS 3 add-on
+    """
+
+    def process_request(self, request):
+        """
+        Add Django CMS 3 on/off switch to toolbar
+        """
+        if hasattr(request, 'toolbar'):
+            request.toolbar.add_item(
+                TemplateItem(
+                    "cms/toolbar/items/on_off.html",
+                    extra_context={
+                        'request': request,
+                        'diazo_enabled': check_themes_enabled(request),
+                    },
+                    side=RIGHT,
+                ),
+                len(request.toolbar.right_items),
+            )
 
 
 class DjangoDiazoMiddleware(object):
     """
     Django middleware wrapper for Diazo in Django.
     """
+
     def __init__(self):
         self.app = None
         self.theme_id = None
@@ -22,19 +48,40 @@ class DjangoDiazoMiddleware(object):
         self.transform = None
         self.params = {}
 
-    def themes_enabled(self, request):
+    def should_transform(self, response):
+        """Determine if we should transform the response
         """
-        Check if themes are enabled for the current session/request.
-        """
-        if settings.DEBUG and request.GET.get('theme') == 'none':
+
+        if asbool(response.headers.get(DIAZO_OFF_HEADER, 'no')):
             return False
-        if 'sessionid' not in request.COOKIES:
-            return True
-        session = SessionStore(session_key=request.COOKIES['sessionid'])
-        return session.get('django_diazo_theme_enabled', True)
+
+        content_type = response.headers.get('Content-Type')
+        if not content_type or not (
+                    content_type.lower().startswith('text/html') or
+                    content_type.lower().startswith('application/xhtml+xml')
+        ):
+            return False
+
+        content_encoding = response.headers.get('Content-Encoding')
+        if content_encoding in ('zip', 'deflate', 'compress',):
+            return False
+
+        status_code, reason = response.status.split(None, 1)
+        if status_code.startswith('3') or \
+                        status_code == '204' or \
+                        status_code == '401':
+            return False
+
+        if response.content_length == 0:
+            return False
+
+        return True
 
     def process_response(self, request, response):
-        if self.themes_enabled(request):
+        # if response.get('Content-Type') in ['text/javascript']:
+        #     return response  # maar dat wat netter; enkel html doorlaten ofzo
+        content = response
+        if check_themes_enabled(request):
             theme = get_active_theme(request)
             if theme:
                 rules_file = os.path.join(theme.theme_path(), 'rules.xml')
@@ -67,9 +114,15 @@ class DjangoDiazoMiddleware(object):
                                 self.params[value] = quote_param(request.environ[key])
 
                 try:
-                    content = etree.fromstring(response.content, etree.HTMLParser())
+                    if isinstance(response, etree._Element):
+                        response = HttpResponse()
+                    else:
+                        parser = etree.HTMLParser(remove_blank_text=True, remove_comments=True)
+                        content = etree.fromstring(response.content, parser)
                     result = self.transform(content, **self.params)
                     response.content = XMLSerializer(result, doctype=DOCTYPE).serialize()
                 except Exception, e:
                     getLogger('django_diazo').error(e)
+        if isinstance(response, etree._Element):
+            response = HttpResponse('<?xml version="1.0" encoding="UTF-8"?>\n' + tostring(content))
         return response
