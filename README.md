@@ -16,7 +16,6 @@ Install the package::
 
     pip install django-diazo
 
-
 ~~~~~~~~~~~~
 settings.py
 ~~~~~~~~~~~~
@@ -51,7 +50,6 @@ You have to provide regular expression patterns in ``Theme.pattern`` to prevent 
 When you want to disable theming for certain pages by content based rules for ``<notheme />``, you need to use the
 WSGI middleware instead.
 
-
 ~~~~~~~
 wsgi.py
 ~~~~~~~
@@ -62,7 +60,6 @@ add the following lines to your ``wsgi.py`` file::
     # Apply WSGI middleware here.
     from django_diazo.wsgi import DiazoMiddlewareWrapper
     application = DiazoMiddlewareWrapper(application)
-
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Database (South migrations)
