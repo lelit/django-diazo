@@ -1,16 +1,17 @@
 from cms.constants import RIGHT
 from cms.toolbar.items import TemplateItem
+from django.utils.decorators import method_decorator
 import os
 from lxml import etree
 from logging import getLogger
-from diazo.wsgi import DiazoMiddleware, asbool, DIAZO_OFF_HEADER
+from diazo.wsgi import DiazoMiddleware
 from diazo.utils import quote_param
 from django.http import HttpResponse
 from lxml.etree import tostring
 from repoze.xmliter.serializer import XMLSerializer
 
-from django_diazo.settings import DOCTYPE, ALLOWED_CONTENT_TYPES
-from django_diazo.utils import get_active_theme, check_themes_enabled
+from django_diazo.settings import DOCTYPE
+from django_diazo.utils import get_active_theme, check_themes_enabled, should_transform
 
 
 class DjangoCmsDiazoMiddleware(object):
@@ -48,46 +49,11 @@ class DjangoDiazoMiddleware(object):
         self.transform = None
         self.params = {}
 
-    def should_transform(self, response):
-        """
-        Determine if we should transform the response
-        """
-
-        if asbool(response.get(DIAZO_OFF_HEADER, 'no')):
-            return False
-
-        content_type = response.get('Content-Type', '')
-        if not content_type:
-            return False
-
-        no_diazo = True
-        for content_type in ALLOWED_CONTENT_TYPES:
-            if content_type in response.get('Content-Type', ''):
-                no_diazo = False
-                break
-        if no_diazo:
-            return False
-
-        content_encoding = response.get('Content-Encoding')
-        if content_encoding in ('zip', 'deflate', 'compress',):
-            return False
-
-        if 300 <= response.status_code <= 399 or response.status_code in [204, 401]:
-            return False
-
-        if len(response.content) == 0:
-            return False
-
-        return True
-
+    @method_decorator(should_transform)
     def process_response(self, request, response):
         """
         Transform the response with Diazo if transformable
         """
-
-        if not self.should_transform(response):
-            return response
-
         content = response
         if check_themes_enabled(request):
             theme = get_active_theme(request)
