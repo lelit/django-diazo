@@ -1,12 +1,13 @@
+import os
 from cms.constants import RIGHT
 from cms.toolbar.items import TemplateItem
+from django.conf import settings
 from django.utils.decorators import method_decorator
-import os
-from lxml import etree
-from logging import getLogger
+from django.http import HttpResponse
 from diazo.wsgi import DiazoMiddleware
 from diazo.utils import quote_param
-from django.http import HttpResponse
+from logging import getLogger
+from lxml import etree
 from lxml.etree import tostring
 from repoze.xmliter.serializer import XMLSerializer
 
@@ -23,6 +24,11 @@ class DjangoCmsDiazoMiddleware(object):
         """
         Add Django CMS 3 on/off switch to toolbar
         """
+        if request.user.is_staff:
+            if 'theme_on' in request.GET and not request.session.get('django_diazo_theme_enabled', False):
+                request.session['django_diazo_theme_enabled'] = True
+            if 'theme_off' in request.GET and request.session.get('django_diazo_theme_enabled', True):
+                request.session['django_diazo_theme_enabled'] = False
         if hasattr(request, 'toolbar'):
             request.toolbar.add_item(
                 TemplateItem(

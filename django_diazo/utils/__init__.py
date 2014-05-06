@@ -9,8 +9,11 @@ from django_diazo.settings import DOCTYPE, ALLOWED_CONTENT_TYPES
 def get_active_theme(request):
     if request.GET.get('theme', None):
         try:
-            return Theme.objects.get(pk=request.GET.get('theme'))
+            theme = request.GET.get('theme')
+            return Theme.objects.get(pk=theme)
         except Theme.DoesNotExist:
+            pass
+        except ValueError:
             pass
     for theme in Theme.objects.filter(enabled=True).order_by('sort'):
         if theme.available(request):
@@ -22,12 +25,9 @@ def check_themes_enabled(request):
         """
         Check if themes are enabled for the current session/request.
         """
-        if settings.DEBUG and request.GET.get('theme') == 'none':
+        if request.GET.get('theme', None) == 'none' and (request.user.is_staff or settings.DEBUG):
             return False
-        if 'sessionid' not in request.COOKIES:
-            return True
-        session = SessionStore(session_key=request.COOKIES['sessionid'])
-        return session.get('django_diazo_theme_enabled', True)
+        return request.session.get('django_diazo_theme_enabled', True)
 
 
 def should_transform(process_response):
