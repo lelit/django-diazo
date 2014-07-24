@@ -28,8 +28,10 @@ class Command(BaseCommand):
                 themes[theme.slug].path = path
                 themes[theme.slug].url = url
                 themes[theme.slug].prefix = theme.prefix
+                themes[theme.slug].pattern = theme.pattern
                 themes[theme.slug].save()
                 themes.pop(theme.slug)
+                logger.info('Synced theme with name \'{0}\'.'.format(theme.name))
             else:
                 Theme.objects.create(
                     name=theme.name,
