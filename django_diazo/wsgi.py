@@ -21,8 +21,14 @@ class DiazoMiddlewareWrapper(object):
         """
         Check if themes are enabled for the current session/request.
         """
-        if settings.DEBUG and request.GET.get('theme') == 'none':
+        if not settings.DEBUG:
+            return True
+        if request.GET.get('theme') == 'none':
             return False
+        if 'theme_off' in request.GET:
+            return False
+        if 'theme_on' in request.GET:
+            return True
         if 'sessionid' not in request.COOKIES:
             return True
         session = SessionStore(session_key=request.COOKIES['sessionid'])

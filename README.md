@@ -32,7 +32,7 @@ Add middleware (or WSGI, see below)::
 
     MIDDLEWARE_CLASSES += (
         'django_diazo.middleware.DjangoDiazoMiddleware',
-        'django_diazo.middleware.DjangoCmsDiazoMiddleware',  # Toolbar on/off switch, if you use Django CMS 3
+        'django_diazo.contrib.cms.middleware.DjangoCmsDiazoMiddleware',  # Toolbar on/off switch, if you use Django CMS 3
     )
 
 If you want to know if Django-Diazo is turned on in your templates add::
