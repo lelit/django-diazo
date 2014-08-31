@@ -9,6 +9,7 @@ REQUIREMENTS = (
     'diazo>=1.0',
     'webob==1.2.3',
     'repoze.xmliter>=0.3',
+    'django-admin-sortable2>=0.3.1',
 )
 TEST_REQUIREMENTS = (
 )
