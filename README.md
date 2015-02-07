@@ -109,12 +109,13 @@ Add the following to your settings:
         ...
     )
 
-When using the wsgi wrapper, you're done, when you use Django middleware add the following as well:
-
     MIDDLEWARE_CLASSES += (
         ...
         'django_diazo.contrib.cms.middleware.DjangoCmsDiazoMiddleware',
     )
+
+The app will add the toolbar button, the middleware takes care of setting an on/off flag in the session.
+
 
 Upload themes
 -------------
