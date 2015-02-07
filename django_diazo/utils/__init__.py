@@ -25,7 +25,7 @@ def check_themes_enabled(request):
         """
         Check if themes are enabled for the current session/request.
         """
-        if request.GET.get('theme', None) == 'none' and (request.user.is_staff or settings.DEBUG):
+        if 'theme_off' in request.GET and (request.user.is_staff or settings.DEBUG):
             return False
         return request.session.get('django_diazo_theme_enabled', True)
 

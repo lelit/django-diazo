@@ -1,6 +1,8 @@
 from django.conf import settings
 
 
+MODULE_NAME = 'diazo'
+
 DOCTYPE = getattr(
     settings,
     'DIAZO_DOCTYPE',

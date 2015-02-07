@@ -68,7 +68,7 @@ class DjangoDiazoMiddleware(object):
                     else:
                         parser = etree.HTMLParser(remove_blank_text=True, remove_comments=True)
                         content = etree.fromstring(response.content, parser)
-                    result = self.transform(content, **self.params)
+                    result = self.transform(content.decode('utf-8'), **self.params)
                     response.content = XMLSerializer(result, doctype=DOCTYPE).serialize()
                 except Exception, e:
                     getLogger('django_diazo').error(e)
