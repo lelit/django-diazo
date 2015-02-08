@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
+
 class DjangoCmsDiazoConfig(AppConfig):
     name = 'django_diazo.contrib.cms'
     label = 'django_cms_diazo'
