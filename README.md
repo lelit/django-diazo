@@ -116,6 +116,9 @@ Add the following to your settings:
 
 The app will add the toolbar button, the middleware takes care of setting an on/off flag in the session.
 
+Note that in production with wsgi middleware, this only works via a session (cookie), so not directly via the GET
+parameter. You will have to reload the page after switching off the theme to get an unthemed site and vice versa.
+
 
 Upload themes
 -------------
