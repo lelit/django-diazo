@@ -1,6 +1,6 @@
 import os
 import zipfile
-from adminsortable.admin import SortableAdminMixin
+from adminsortable2.admin import SortableAdminMixin
 from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _

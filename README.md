@@ -24,7 +24,7 @@ Add the app to your project::
 
     INSTALLED_APPS = (
         ...
-        'adminsortable',
+        'adminsortable2',
         'django_diazo',
         ...
     )
