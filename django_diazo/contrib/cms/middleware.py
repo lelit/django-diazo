@@ -3,7 +3,6 @@ class DjangoCmsDiazoMiddleware(object):
     """
     Django CMS 3 add-on
     """
-
     def process_request(self, request):
         """
         Toggle theme enabled boolean

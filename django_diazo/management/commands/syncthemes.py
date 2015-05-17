@@ -3,12 +3,10 @@ from logging import getLogger
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
+
 from django_diazo.models import Theme
 from django_diazo.theme import registry
-from django_diazo import autodiscover as django_diazo_autodiscover
 
-
-django_diazo_autodiscover()
 
 class Command(BaseCommand):
     help = _('Synchronize database with built-in themes that are registered via the registry.')
