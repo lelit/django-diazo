@@ -13,6 +13,7 @@ class ThemeForm(forms.ModelForm):
 
     class Meta:
         model = Theme
+        fields = '__all__'
 
     def save(self, commit=True):
         instance = super(ThemeForm, self).save(commit)
