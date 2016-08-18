@@ -65,7 +65,7 @@ class DiazoMiddlewareWrapper(object):
                     )
                 try:
                     return self.diazo(environ, start_response)
-                except Exception, e:
+                except Exception as e:
                     getLogger('django_diazo').error(e)
 
         return self.app(environ, start_response)

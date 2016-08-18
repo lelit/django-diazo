@@ -70,7 +70,7 @@ class DjangoDiazoMiddleware(object):
                         content = etree.fromstring(response.content, parser)
                     result = self.transform(content.decode('utf-8'), **self.params)
                     response.content = XMLSerializer(result, doctype=DOCTYPE).serialize()
-                except Exception, e:
+                except Exception as e:
                     getLogger('django_diazo').error(e)
         if isinstance(response, etree._Element):
             response = HttpResponse('<?xml version="1.0" encoding="UTF-8"?>\n' + tostring(content))
